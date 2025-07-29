@@ -4,13 +4,13 @@ module.exports = {
     // this will check Typescript files
     '**/*.(ts|tsx)': () => 'yarn tsc --noEmit',
 
-    // This will format TypeScript and JavaScript files (ESLint disabled for now)
+    // This will lint and format TypeScript and JavaScript files
     '**/*.(ts|tsx|js)': filenames => {
         const escapedFilenames = filenames
             .map(f => `"${path.resolve(f)}"`)
             .join(' ');
         return [
-            // `yarn eslint --fix ${escapedFilenames}`, // Disabled due to version conflicts
+            `yarn eslint --fix ${escapedFilenames}`,
             `yarn prettier --write ${escapedFilenames}`,
         ];
     },

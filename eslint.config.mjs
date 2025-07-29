@@ -10,13 +10,26 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals"),
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    files: ["**/*.js", "**/*.mjs"],
     rules: {
-      // Disable problematic rules for now
-      "react/no-string-refs": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      // Allow require() in JS files
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-var-requires": "off",
+    },
+  },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      // TypeScript specific rules
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+      "prefer-const": "warn",
+      "no-console": ["warn", { "allow": ["warn", "error"] }],
+      // React specific
+      "react/no-unescaped-entities": "off",
+      "react/display-name": "off",
     },
   },
 ];
