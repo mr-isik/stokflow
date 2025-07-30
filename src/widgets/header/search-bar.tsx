@@ -114,7 +114,7 @@ export const SearchBar = ({ className }: SearchBarProps) => {
                 classNames={{
                     base: 'w-full',
                     inputWrapper:
-                        'bg-default-50 border-2 border-default-200 hover:border-default-300 focus-within:border-primary-400 focus-within:bg-white transition-all duration-200 min-h-unit-12',
+                        'bg-default-50 border border-default-200 hover:border-default-300 focus-within:border-primary-400 focus-within:bg-white transition-all duration-200 min-h-unit-12',
                     input: 'text-small placeholder:text-default-400 min-w-0',
                 }}
                 size="lg"

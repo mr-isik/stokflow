@@ -24,23 +24,20 @@ const Header = () => {
                         <div className="flex items-center gap-6 text-default-600">
                             <Link
                                 href="/customer-service"
-                                className="hover:text-primary transition-colors duration-200 flex items-center gap-1 text-sm"
+                                className="hover:text-primary text-foreground-500 transition-colors duration-200 flex items-center gap-1 text-sm"
                             >
-                                <span>📞</span>
                                 Müşteri Hizmetleri
                             </Link>
                             <Link
                                 href="/track-order"
-                                className="hover:text-primary transition-colors duration-200 flex items-center gap-1 text-sm"
+                                className="hover:text-primary text-foreground-500 transition-colors duration-200 flex items-center gap-1 text-sm"
                             >
-                                <span>📦</span>
                                 Sipariş Takibi
                             </Link>
                             <Link
                                 href="/stores"
-                                className="hover:text-primary transition-colors duration-200 flex items-center gap-1 text-sm"
+                                className="hover:text-primary text-foreground-500 transition-colors duration-200 flex items-center gap-1 text-sm"
                             >
-                                <span>🏪</span>
                                 Mağazalar
                             </Link>
                         </div>
@@ -54,15 +51,15 @@ const Header = () => {
                             >
                                 <Link
                                     href="/deals"
-                                    className="hover:text-primary transition-colors duration-200 font-medium flex items-center gap-1 text-sm"
+                                    className="hover:text-primary text-foreground-500 transition-colors duration-200 font-medium flex items-center gap-1 text-sm"
                                 >
-                                    🔥 Günün Fırsatları
+                                    Günün Fırsatları
                                 </Link>
                             </Badge>
                             <span className="text-default-300">|</span>
                             <Link
                                 href="/help"
-                                className="hover:text-primary transition-colors duration-200 text-sm"
+                                className="hover:text-primary text-foreground-500 transition-colors duration-200 text-sm"
                             >
                                 Yardım
                             </Link>
@@ -74,7 +71,7 @@ const Header = () => {
             {/* Main Header */}
             <Navbar
                 maxWidth="2xl"
-                className="bg-white/98 backdrop-blur-md shadow-sm border-b border-default-100"
+                className="bg-white/98 backdrop-blur-md border-b border-default-200"
                 height="80px"
                 isBordered={false}
             >
@@ -157,31 +154,28 @@ const Header = () => {
             </div>
 
             {/* Categories Navigation - Desktop Only */}
-            <div className="hidden lg:block bg-gradient-to-r from-white via-primary-50/30 to-white border-t border-default-100 shadow-md">
-                <div className="container mx-auto px-4">
-                    <div className="flex items-center justify-between py-4">
+            <div className="hidden lg:block bg-gradient-to-r from-white via-primary-50/30 to-white border-t border-default-100">
+                <div className="container mx-auto px-2">
+                    <div className="flex items-center justify-between py-3">
                         <CategoriesNav />
 
                         <div className="flex items-center gap-6 text-sm text-default-600">
                             <Link
                                 href="/new-arrivals"
-                                className="hover:text-primary transition-colors duration-200 font-medium flex items-center gap-2 text-sm bg-gradient-to-r from-yellow-50 to-orange-50 px-3 py-2 rounded-full border border-yellow-200 hover:border-yellow-300 hover:shadow-lg"
+                                className="text-foreground-500 hover:text-primary text-sm font-medium"
                             >
-                                <span className="text-base">✨</span>
                                 Yeni Gelenler
                             </Link>
                             <Link
                                 href="/best-sellers"
-                                className="hover:text-primary transition-colors duration-200 font-medium flex items-center gap-2 text-sm bg-gradient-to-r from-red-50 to-orange-50 px-3 py-2 rounded-full border border-red-200 hover:border-red-300 hover:shadow-lg"
+                                className="text-foreground-500 hover:text-primary text-sm font-medium"
                             >
-                                <span className="text-base">🔥</span>
                                 Çok Satanlar
                             </Link>
                             <Link
                                 href="/brands"
-                                className="hover:text-primary transition-colors duration-200 font-medium flex items-center gap-2 text-sm bg-gradient-to-r from-blue-50 to-purple-50 px-3 py-2 rounded-full border border-blue-200 hover:border-blue-300 hover:shadow-lg"
+                                className="text-foreground-500 hover:text-primary text-sm font-medium"
                             >
-                                <span className="text-base">🏷️</span>
                                 Markalar
                             </Link>
                         </div>
