@@ -1,13 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@heroui/react';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
-import { useForm } from '@/shared/hooks/use-form';
 import { FormInput } from '@/shared/ui/form-input';
 import { FormButton } from '@/shared/ui/form-button';
-import { loginSchema, type LoginFormData } from '@/entities/auth/model';
-import { AuthAPI } from '@/entities/auth/api';
+import { useLoginForm } from '../hooks/use-login-form';
 
 interface LoginFormProps {
     onSuccess?: () => void;
@@ -21,34 +19,17 @@ export const LoginForm = ({ onSuccess, redirectUrl }: LoginFormProps) => {
     const togglePasswordVisibility = () =>
         setIsPasswordVisible(!isPasswordVisible);
 
-    const { values, errors, isSubmitting, setValue, handleSubmit } =
-        useForm<LoginFormData>({
-            schema: loginSchema,
-            defaultValues: {
-                email: '',
-                password: '',
-            },
-            onSubmit: async (data: LoginFormData) => {
-                try {
-                    setServerError('');
-                    const authApi = AuthAPI;
-                    await authApi.login(data);
-                    onSuccess?.();
-                    if (redirectUrl) {
-                        window.location.href = redirectUrl;
-                    }
-                } catch (error) {
-                    setServerError(
-                        error instanceof Error
-                            ? error.message
-                            : 'Bir hata oluştu'
-                    );
-                }
-            },
-        });
+    const { handleSubmit, register, formState, onSubmit, isSubmitting } =
+        useLoginForm(
+            message => setServerError(message),
+            onSuccess,
+            redirectUrl
+        );
+
+    const { errors } = formState;
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {serverError && (
                 <div className="p-3 rounded-lg bg-danger-50 border border-danger-200">
                     <p className="text-danger-600 text-sm">{serverError}</p>
@@ -59,22 +40,20 @@ export const LoginForm = ({ onSuccess, redirectUrl }: LoginFormProps) => {
                 label="Email"
                 type="email"
                 placeholder="ornek@email.com"
-                value={values.email || ''}
                 error={errors.email}
-                onChange={e => setValue('email', e.target.value)}
                 autoComplete="email"
                 isRequired
+                {...register('email')}
             />
 
             <FormInput
                 label="Şifre"
                 type={isPasswordVisible ? 'text' : 'password'}
                 placeholder="Şifrenizi girin"
-                value={values.password || ''}
                 error={errors.password}
-                onChange={e => setValue('password', e.target.value)}
                 autoComplete="current-password"
                 isRequired
+                {...register('password')}
                 endContent={
                     <button
                         className="focus:outline-none"

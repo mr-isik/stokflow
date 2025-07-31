@@ -28,6 +28,7 @@ const eslintConfig = [
                 'warn',
                 { argsIgnorePattern: '^_' },
             ],
+            '@typescript-eslint/ban-ts-comment': 'off',
             'prefer-const': 'warn',
             'no-console': ['warn', { allow: ['warn', 'error'] }],
             // React specific

@@ -1,20 +1,23 @@
 import { Input as HeroInput, InputProps } from '@heroui/react';
 import { forwardRef } from 'react';
+import { FieldError } from 'react-hook-form';
 
 interface FormInputProps
     extends Omit<InputProps, 'errorMessage' | 'isInvalid'> {
-    error?: string;
+    error?: string | FieldError;
     label: string;
 }
 
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     ({ error, label, ...props }, ref) => {
+        const errorMessage = typeof error === 'string' ? error : error?.message;
+
         return (
             <HeroInput
                 ref={ref}
                 label={label}
-                errorMessage={error}
-                isInvalid={!!error}
+                errorMessage={errorMessage}
+                isInvalid={!!errorMessage}
                 variant="bordered"
                 size="md"
                 classNames={{
@@ -38,5 +41,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         );
     }
 );
+
+FormInput.displayName = 'FormInput';
 
 FormInput.displayName = 'FormInput';
