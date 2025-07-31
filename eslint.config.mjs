@@ -12,17 +12,11 @@ const compat = new FlatCompat({
 const eslintConfig = [
     ...compat.extends('next/core-web-vitals', 'next/typescript'),
     {
-        files: ['**/*.js', '**/*.mjs'],
+        files: ['**/*.js', '**/*.mjs', '**/*.ts', '**/*.tsx'],
         rules: {
             // Allow require() in JS files
             '@typescript-eslint/no-require-imports': 'off',
             '@typescript-eslint/no-var-requires': 'off',
-        },
-    },
-    {
-        files: ['**/*.ts', '**/*.tsx'],
-        rules: {
-            // TypeScript specific rules
             '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-unused-vars': [
                 'warn',
