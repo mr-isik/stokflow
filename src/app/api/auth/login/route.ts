@@ -1,48 +1,6 @@
 import { createClient } from '@/shared/lib/supabase/server';
 import { NextRequest } from 'next/server';
 
-export async function GET() {
-    try {
-        const supabase = await createClient();
-        const { data: recipes, error } = await supabase
-            .from('recipes')
-            .select('*');
-
-        if (error) {
-            return new Response(
-                JSON.stringify({
-                    message: 'An error occurred while fetching recipes.',
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-        }
-
-        return new Response(JSON.stringify(recipes), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-    } catch (error) {
-        return new Response(
-            JSON.stringify({
-                message: 'An error occurred while fetching recipes.',
-            }),
-            {
-                status: 500,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-    }
-}
-
 export async function POST(request: NextRequest) {
     try {
         const supabase = await createClient();
