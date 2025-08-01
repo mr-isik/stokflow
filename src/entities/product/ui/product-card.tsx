@@ -3,11 +3,11 @@
 import { Card, CardBody, CardFooter, Image, Button } from '@heroui/react';
 import { IoCartOutline } from 'react-icons/io5';
 import { useState } from 'react';
-import type { ProductsResponse } from '../model';
+import type { Product } from '../model';
 
 // Single Responsibility: Her component tek bir görevi var
 interface ProductImageProps {
-    image: ProductsResponse[0]['product_images'][0];
+    image: Product['product_images'][0];
     title: string;
 }
 
@@ -30,7 +30,7 @@ function ProductImage({ image, title }: ProductImageProps) {
 
 // Single Responsibility: Sadece price display
 interface ProductPriceProps {
-    variants: ProductsResponse[0]['product_variants'];
+    variants: Product['product_variants'];
 }
 
 function ProductPrice({ variants }: ProductPriceProps) {
@@ -67,7 +67,7 @@ function ProductActions({
 
 // Interface Segregation: Sadece gerekli props
 interface ProductCardProps {
-    product: ProductsResponse[0];
+    product: Product;
     onAddToCart?: (productId: string) => void;
     onProductClick?: (productId: string, slug: string) => void;
     className?: string;
@@ -100,8 +100,9 @@ export function ProductCard({
 
     // Featured image selection
     const featuredImage =
-        product.product_images.find(img => img.is_featured) ||
-        product.product_images[0];
+        product.product_images.find(
+            (img: Product['product_images'][0]) => img.is_featured
+        ) || product.product_images[0];
 
     if (!featuredImage) {
         return null; // Early return for invalid state

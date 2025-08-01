@@ -2,6 +2,7 @@
 
 import { ProductCard } from './product-card';
 import type { ProductsResponse } from '../model';
+import { useInfiniteQueryProducts } from '../queries';
 
 // Mock data example
 const mockProduct: ProductsResponse[0] = {
@@ -35,38 +36,18 @@ export function ProductList() {
         // Router navigation here
     };
 
+    const {
+        data,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetching,
+        isFetchingNextPage,
+        status,
+    } = useInfiniteQueryProducts();
+
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={handleAddToCart}
-                onProductClick={handleProductClick}
-            />
-
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={handleAddToCart}
-                onProductClick={handleProductClick}
-            />
-
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={handleAddToCart}
-                onProductClick={handleProductClick}
-            />
-
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={handleAddToCart}
-                onProductClick={handleProductClick}
-            />
-
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={handleAddToCart}
-                onProductClick={handleProductClick}
-            />
-
             <ProductCard
                 product={mockProduct}
                 onAddToCart={handleAddToCart}

@@ -8,4 +8,8 @@ export type {
 } from './product-card';
 
 // Re-export product types
-export type { ProductsResponse } from '../model';
+export type {
+    Product,
+    ProductsResponse,
+    PaginatedProductsResponse,
+} from '../model';

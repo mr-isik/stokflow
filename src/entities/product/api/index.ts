@@ -1,13 +1,26 @@
 import { apiClient } from '@/shared/api';
-import { ProductsResponse, productsResponseSchema } from '../model';
+import { PaginatedProductsResponse, paginatedProductsSchema } from '../model';
+
+interface GetProductsParams {
+    pageParam?: number;
+    pageSize?: number;
+}
 
 export const productsAPI = {
-    async getProducts(): Promise<ProductsResponse> {
+    async getProducts({
+        pageParam = 0,
+        pageSize = 10,
+    }: GetProductsParams): Promise<PaginatedProductsResponse> {
         try {
-            const res = await apiClient.get('/products', {
-                response: productsResponseSchema,
-            });
-            return res;
+            const response = await apiClient.get<PaginatedProductsResponse>(
+                '/products',
+                {
+                    page: pageParam,
+                    limit: pageSize,
+                },
+                paginatedProductsSchema
+            );
+            return response;
         } catch (error) {
             throw new Error('Ürünler alınamadı. Lütfen tekrar deneyin.');
         }
