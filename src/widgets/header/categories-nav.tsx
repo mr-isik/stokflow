@@ -24,7 +24,6 @@ export const CategoriesNav = ({ className }: CategoriesNavProps) => {
                     {category.subcategories &&
                     category.subcategories.length > 0 ? (
                         <Dropdown
-                            backdrop="blur"
                             classNames={{
                                 content:
                                     'min-w-[280px] p-1 bg-white/95 backdrop-blur-xl border border-default-200 shadow-2xl',

@@ -13,13 +13,14 @@ import { CartDropdown } from './cart-dropdown';
 import { UserDropdown } from './user-dropdown';
 import { CategoriesNav } from './categories-nav';
 import { MobileMenu } from './mobile-menu';
+import MaxWidthWrapper from '@/shared/ui/max-width-wrapper';
 
 const Header = () => {
     return (
         <div className="w-full border-b border-default-200">
             {/* Top Bar - Hidden on mobile */}
             <div className="hidden lg:block bg-gradient-to-r from-default-50 to-default-100 border-b border-default-200">
-                <div className="container mx-auto px-4 py-2">
+                <MaxWidthWrapper className="py-2">
                     <div className="flex justify-between items-center text-sm">
                         <div className="flex items-center gap-6 text-default-600">
                             <Link
@@ -65,7 +66,7 @@ const Header = () => {
                             </Link>
                         </div>
                     </div>
-                </div>
+                </MaxWidthWrapper>
             </div>
 
             {/* Main Header */}
@@ -103,7 +104,7 @@ const Header = () => {
                 </div>
 
                 {/* Desktop Layout */}
-                <div className="hidden lg:flex items-center justify-between w-full">
+                <MaxWidthWrapper className="hidden lg:flex items-center justify-between w-full">
                     {/* Desktop Logo */}
                     <NavbarBrand className="flex-shrink-0">
                         <Link
@@ -145,7 +146,7 @@ const Header = () => {
                             <UserDropdown />
                         </NavbarItem>
                     </NavbarContent>
-                </div>
+                </MaxWidthWrapper>
             </Navbar>
 
             {/* Mobile Search Bar - Separate Row */}
@@ -155,32 +156,11 @@ const Header = () => {
 
             {/* Categories Navigation - Desktop Only */}
             <div className="hidden lg:block bg-gradient-to-r from-white via-primary-50/30 to-white border-t border-default-100">
-                <div className="container mx-auto px-2">
-                    <div className="flex items-center justify-between py-3">
+                <MaxWidthWrapper>
+                    <div className="flex items-center justify-center py-3">
                         <CategoriesNav />
-
-                        <div className="flex items-center gap-6 text-sm text-default-600">
-                            <Link
-                                href="/new-arrivals"
-                                className="text-foreground-500 hover:text-primary text-sm font-medium"
-                            >
-                                Yeni Gelenler
-                            </Link>
-                            <Link
-                                href="/best-sellers"
-                                className="text-foreground-500 hover:text-primary text-sm font-medium"
-                            >
-                                Çok Satanlar
-                            </Link>
-                            <Link
-                                href="/brands"
-                                className="text-foreground-500 hover:text-primary text-sm font-medium"
-                            >
-                                Markalar
-                            </Link>
-                        </div>
                     </div>
-                </div>
+                </MaxWidthWrapper>
             </div>
         </div>
     );
