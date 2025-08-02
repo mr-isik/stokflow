@@ -1,0 +1,101 @@
+id,created_at,title,description,slug,is_active,brand_id
+1,2024-08-26 10:30:00,Tuzlu Yulaf Kapları,"Kahvaltı veya atıştırmalık için hazır tuzlu yulaf.",tuzlu-yulaf-kaplarim,true,10
+2,2024-11-14 14:20:00,İki Renkli Rüzgarlık,"Aktif günler için şık iki renkli rüzgarlık.",iki-renkli-ruzgarlik,true,5
+3,2025-01-09 09:15:00,Araç Kurtarma Aleti,Arabada acil durumlar için çok fonksiyonlu alet.,arac-kurtarma-aleti,false,1
+4,2025-03-27 16:45:00,Fitness Akıllı Saat,Fitness takibi için çok fonksiyonlu akıllı saat.,fitness-akilli-saat,true,15
+5,2024-12-15 11:30:00,Sarımsaklı Naan Ekmeği,"Sarımsak aromalı yumuşak ve lezzetli pide, soslamak için mükemmel.",sarimsaki-naan-ekmegi,true,10
+6,2025-11-25 13:45:00,Güvenlik Gözlükleri,DIY ve inşaat işleri için koruyucu gözlük.,guvenlik-gozlukleri,false,7
+7,2025-05-14 15:20:00,Zencefilli Kurabiye Evi Seti,Şenlikli zencefilli kurabiye evi yapmak için ihtiyacınız olan her şey.,zencefilli-kurabiye-evi-seti,true,10
+8,2025-11-19 12:10:00,Duvara Monte Kitap Rafı,En sevdiğiniz kitapları sergilemek için asma kitap rafı.,duvara-monte-kitap-rafi,true,4
+9,2025-02-14 14:30:00,Yeniden Kullanılabilir Atıştırmalık Poşetleri,Atıştırmalıklar için çevre dostu yeniden kullanılabilir poşetler.,yeniden-kullanilabilir-atistirmalik-posetleri,true,6
+10,2025-12-12 10:45:00,Oversize Kot Gömlek,Katmanlama için mükemmel trendy oversize kot gömlek.,oversize-kot-gomlek,false,5
+11,2025-09-04 16:15:00,File Spor Taytı,Nihai konfor için nefes alabilir file spor taytı.,file-spor-tayti,true,15
+12,2025-10-20 11:20:00,Acılı Peynir Dilimleri,"Sandviçler için mükemmel, baharatlı kremalı peynir.",acili-peynir-dilimleri,true,10
+13,2025-04-22 13:55:00,Aktif Yarış Sırtı Atleti,Antrenmanlar için hafif ve nem alıcı yarış sırtı atleti.,aktif-yaris-sirti-atleti,true,15
+14,2025-01-22 09:40:00,Araç Güneşliği,Araç içi koruması için ön cam güneşliği.,arac-gunesligi,false,1
+15,2025-03-18 15:30:00,Evcil Hayvan Takip Tasması,Akıllı telefon uygulaması ile evcil hayvanınızı bulmanıza yardımcı olan GPS tasma.,evcil-hayvan-takip-tasmasi,true,19
+16,2026-01-13 12:25:00,Sebzeli Suşi Rulolar,Çeşitli sebzelerle dolu taze suşi ruloları.,sebzeli-susi-rulolar,false,10
+17,2025-06-03 14:10:00,Şeftali Yarımları (Konserve),"Tatlılar için harika, meyve suyunda tatlı şeftali yarımları.",seftali-yarimlari-konserve,false,10
+18,2025-11-13 16:35:00,Bambu Küvet Rafı,"Banyoda kitap, telefon ve atıştırmalık tutmak için genişletilebilir raf.",bambu-kuvet-rafi,false,4
+19,2025-05-11 11:45:00,Dijital Fotoğraf Çerçevesi,Fotoğraf görüntülemek için Wi-Fi özellikli dijital çerçeve.,dijital-fotograf-cercevesi,true,1
+20,2025-05-24 13:20:00,Ballı Susam Tavuk Karışımı,Ballı susam soslu yumuşak tavuk içeren yemek seti.,balli-susam-tavuk-karisimi,false,10
+21,2025-01-12 10:15:00,Acılı Avokado Salsası,"Olgun avokado, domates, soğan ve acı biberden yapılan lezzetli salsa, soslamak veya garnitür için harika.",acili-avokado-salsasi,true,10
+22,2024-12-03 15:40:00,Organik Esmer Şeker,Pişirme ve yemek yapmak için doğal tatlandırıcı.,organik-esmer-seker,true,6
+23,2025-10-30 12:50:00,Açık Hava Kamp Hamağı,Doğada dinlenmek için hafif ve dayanıklı hamak.,acik-hava-kamp-hamagi,true,17
+24,2025-03-22 14:25:00,Fitness Direnç Bantları Seti,Antrenmanlar için çeşitli direnç bantları içeren set.,fitness-direnc-bantlari-seti,true,15
+25,2025-03-13 16:05:00,Vanilyalı Muhallebi Karışımı,Kremalı vanilyalı muhallebi için hazır karışım.,vanilya-muhallebi-karisimi,true,10
+26,2025-12-10 11:30:00,Deri Omuz Çantası,Günlük kullanım için şık deri omuz çantası.,deri-omuz-cantasi,false,5
+27,2025-02-03 13:15:00,Ayaklı Şarap Rafı,Şişeleri saklamak ve sergilemek için şık şarap rafı.,ayakli-sarap-rafi,false,4
+28,2025-05-01 15:45:00,Peynirli Brokoli Çorba Karışımı,Dakikalar içinde doyurucu peynir ve brokoli çorbası için sadece su ekleyin.,peynirli-brokoli-corba-karisimi,false,10
+29,2025-02-26 09:20:00,Kompost Kutusu,Mutfak atıkları için tezgah üstü kompost kutusu.,kompost-kutusu,false,6
+30,2025-02-13 12:35:00,Tarçınlı Çörek,"Pişmeye hazır tatlı ve yapışkan tarçınlı çörek.",tarcin-corek,true,10
+31,2024-12-06 14:20:00,Hayvan Pati İzi Sabun Dispenseri,Pati izleri olan banyo veya mutfaklar için sevimli dispenser.,hayvan-pati-izi-sabun-dispenseri,false,8
+32,2024-08-16 10:55:00,Yaban Mersinli Yulaf Kapları,Kolay kahvaltı için yaban mersinli hazır yulaf kapları.,yaban-mersinli-yulaf-kaplarim,true,10
+33,2025-02-16 13:30:00,Kızılcık Suyu,Şeker ilavesiz ferahlatıcı kızılcık suyu.,kizilcik-suyu,false,10
+34,2024-09-24 15:10:00,Akçaağaç Soslu Pastırma,Akçaağaç aromalı lezzetli pastırma kurusu.,akcaagac-soslu-pastirma,true,10
+35,2026-03-18 11:40:00,Vegan Taco Baharatı,Lezzetli vegan taco dolgusu oluşturmak için baharat karışımı.,vegan-taco-baharati,true,10
+36,2025-04-02 16:25:00,Manyetik Perde Tutucuları,Perdeler veya drapeler için kullanımı kolay tutucular.,manyetik-perde-tutuculari,true,4
+37,2024-10-02 12:15:00,Puzzle,Her yaş için zorlayıcı 1000 parçalık yapboz.,puzzle,true,9
+38,2024-09-17 14:45:00,Otlu Keçi Peyniri,"Otlarla aromalandırılmış ekşi keçi peyniri, atıştırmalık için mükemmel.",otlu-keci-peyniri,true,10
+39,2025-06-19 10:30:00,Kablosuz Fare,Ayarlanabilir DPI'lı ergonomik kablosuz fare.,kablosuz-fare,true,1
+40,2024-09-17 13:20:00,Ceviz İçi Yarımları,Pişirme veya atıştırmalık için taze ceviz içi yarımları.,ceviz-ici-yarimlari,true,10
+41,2024-09-23 15:55:00,Acılı Limonlu Karides,"Hızlı akşam yemekleri için mükemmel, acı biber ve limonla baharatlanmış donmuş karides.",acili-limonlu-karides,true,10
+42,2025-10-31 11:25:00,Ev Temizlik Robotu,Zahmetsiz ev bakımı için otomatik temizlik robotu.,ev-temizlik-robotu,true,12
+43,2025-03-30 14:40:00,Fıstık Ezmeli Kraker Lokmaları,Fıstık ezmesi dolu çıtır kraker lokmaları.,fistik-ezmeli-kraker-lokmalari,true,10
+44,2024-10-29 16:10:00,Çıkarılabilir Kılıflı Evcil Hayvan Yatağı,Kolay temizlik için yıkanabilir kılıflı rahat evcil hayvan yatağı.,cikarilabilir-kilifli-evcil-hayvan-yatagi,true,19
+45,2024-10-10 12:35:00,Taşınabilir Telefon Şarjı,Hareket halindeyken cihazları şarj etmek için yüksek kapasiteli güç bankası.,tasinabilir-telefon-sarji,true,1
+46,2025-02-07 13:45:00,Klasik Sezar Salata Seti,Taze ve lezzetli Sezar salatası için ihtiyacınız olan her şey.,klasik-sezar-salata-seti,false,10
+47,2025-05-27 15:20:00,Fesleğenli Domates Çorbası,"Taze fesleğenle aromalandırılmış zengin domates çorbası, ısıtmaya hazır.",feslegenli-domates-corbasi,true,10
+48,2025-03-21 11:10:00,Akustik Gitar,Doğal cilalı yeni başlayanlar için uygun akustik gitar.,akustik-gitar,true,16
+49,2024-12-10 14:35:00,Acılı Tayland Hindistan Cevizi Çorbası,"Hindistan cevizi sütü, baharat ve sebzelerle hazır yemek çorbası.",acili-tayland-hindistan-cevizi-corbasi,false,10
+50,2025-07-24 16:40:00,Sebzeli Lazanya,"Makarna, sebze ve peynir katmanları mükemmel şekilde pişirilmiş.",sebzeli-lazanya,true,10
+51,2025-02-27 12:25:00,Kompakt Açılır Çadır,Kamp ve açık hava festivalleri için kolay kurulum çadırı.,kompakt-acilir-cadir,false,17
+52,2024-12-23 10:15:00,Cadılar Bayramı Dekorasyon Seti,Ürkütücü atmosfer yaratmak için eğlenceli Cadılar Bayramı dekorasyonları.,cadilar-bayrami-dekorasyon-seti,false,20
+53,2024-08-29 13:50:00,Paslanmaz Çelik Çatal Kaşık Seti,Günlük kullanım veya özel günler için yüksek kaliteli çatal kaşık seti.,paslanmaz-celik-catal-kasik-seti,true,2
+54,2025-05-16 15:30:00,El Tipi Giysi Buhar Makinesi,Kıyafetlerden kırışıklıkları gidermenin hızlı ve kolay yolu.,el-tipi-giysi-buhar-makinesi,false,4
+55,2025-01-25 11:45:00,Ayarlanabilir Bar Tabureleri,Ayarlanabilir yükseklik ve döner özellikli şık bar tabureleri.,ayarlanabilir-bar-tabureleri,true,4
+56,2024-10-07 14:20:00,Badem Sütü,"Smoothie'ler için mükemmel, lezzetli kremalı badem sütü.",badem-sutu,false,10
+57,2025-11-03 16:05:00,Elektrikli Tıraş Makinesi,Pürüzsüz tıraş için şarj edilebilir elektrikli tıraş makinesi.,elektrikli-tiras-makinesi,true,8
+58,2026-01-04 12:40:00,Evcil Hayvan Okşama Fırçası,Evcil hayvanlardan dökülen tüyleri temizlemek için nazik fırça.,evcil-hayvan-oksama-fircasi,false,19
+59,2025-01-18 10:55:00,Makarna Primavera Seti,Makarna ve taze sebzelerle hızlı yemek seti.,makarna-primavera-seti,true,10
+60,2025-08-09 13:15:00,Hava Temizleyici,Temiz iç mekan havası için HEPA hava temizleyici.,hava-temizleyici,false,7
+61,2024-11-24 15:25:00,Elektrikli Kavanoz ve Şişe Açacağı,Tek dokunuşla kavanoz kapakları ve şişe kapakları kolayca açar.,elektrikli-kavanoz-ve-sise-acagaci,false,2
+62,2025-06-08 11:40:00,Waffle Makinesi,Bu kullanıcı dostu cihazla lezzetli waffle'lar yapın.,waffle-makinesi,true,2
+63,2026-01-04 14:15:00,Tomatillo Salsası,Tomatillo ve biberlerden yapılan ekşi salsa.,tomatillo-salsasi,false,10
+64,2024-08-14 16:30:00,Kendi Kendini Temizleyen Su Şişesi,Kendi kendini temizlemek için dahili UV-C ışıklı su şişesi.,kendi-kendini-temizleyen-su-sisesi,false,1
+65,2024-08-30 12:20:00,Saksı Toprağı,İç mekan bitkileri için premium saksı toprağı.,saksi-topragi,true,14
+66,2024-11-13 13:45:00,Fransız Soğan Sosu,"Gerçek soğan ve baharatlarla yapılan kremalı sos, cips ve sebzeler için harika.",fransiz-sogan-sosu,false,10
+67,2024-08-25 10:55:00,Atletik Koşu Ceketi,Antrenmanlar sırasında konfor ve performans için tasarlanmış.,atletik-kosu-ceketi,true,15
+68,2025-06-18 15:10:00,Donmuş Meyve Karışımı,"Çilek, yaban mersini ve ahududu karışımı, smoothie'ler veya tatlılar için harika.",donmus-meyve-karisimi,false,10
+69,2025-07-08 11:25:00,Hibiskus Bitki Çayı,"Çiçeksi ve ferahlatıcı bitki çayı, sıcak veya soğuk içmek için harika.",hibiskus-bitki-cayi,false,10
+70,2024-09-18 14:35:00,Limonlu Soslu Lahana Salatası,"Canlı limon soslu taze lahana salatası, garnitür olarak harika.",limonlu-soslu-lahana-salatasi,true,10
+71,2025-10-23 16:20:00,Rustik Ahşap Resim Çerçevesi,En sevdiğiniz fotoğrafları sergilemek için büyüleyici çerçeve.,rustik-ahsap-resim-cercevesi,true,76
+72,2025-01-15 12:40:00,Sebze Spiralizörü,Sağlıklı yemekler için kolayca spiral sebze eriştesi oluşturun.,sebze-spiralizoru,true,2
+73,2025-08-09 13:55:00,Dekoratif Duvar Halısı,Herhangi bir odaya çekicilik katmak için renkli halı.,dekoratif-duvar-halisi,false,20
+74,2025-03-08 15:15:00,Sarımsaklı Ekmek Çubukları,"Makarna yemekleriyle mükemmel, pişmeye hazır sarımsaklı ekmek çubukları.",sarimsak-ekmek-cubuklari,true,10
+75,2025-08-16 10:30:00,Ballı Hardallı Kraker Lokmaları,"Soslamak için mükemmel, tatlı ballı hardal aromalı lezzetli kraker lokmaları.",balli-hardalli-kraker-lokmalari,false,10
+76,2026-02-11 14:25:00,Kabak Eriştesi,"Makarnaya sağlıklı alternatif spiral kabak.",kabak-eristesi,false,6
+77,2025-03-13 11:40:00,Organik Kinoa Cipsi,"Kinoa'dan yapılan hafif ve çıtır cips, soslamak için ideal.",organik-kinoa-cipsi,false,6
+78,2025-08-19 13:15:00,Samoa Kurabiye Karışımı,Evde en sevdiğiniz Samoa tarzı kurabiyeler yapmak için karışım.,samoa-kurabiye-karisimi,true,10
+79,2024-10-09 15:50:00,Fitilli Triko Elbise,Vücudunuzu mükemmel saran fitilli triko elbise.,fitilli-triko-elbise,true,5
+80,2025-04-04 12:35:00,Yüksek Kaliteli Yoga Matı,Yoga ve fitness egzersizleri için kaymaz mat.,yuksek-kaliteli-yoga-mati,true,15
+81,2025-06-04 16:10:00,Fırınlanmış Falafel Topları,"Nohut ve otlardan yapılan donmuş falafel topları, hızlı yemekler veya salatalar için mükemmel.",firinlanmis-falafel-toplari,true,6
+82,2024-10-10 14:45:00,Ayarlanabilir Pedikür Ayak Desteği,Daha kolay pedikür tedavisi için ergonomik ayak desteği.,ayarlanabilir-pedikur-ayak-destegi,true,8
+83,2024-08-13 11:20:00,Kruvaze Midi Etek,"Hem resmi hem günlük etkinlikler için harika, kruvaze tasarımlı zarif midi etek.",kruvaze-midi-etek,true,5
+84,2024-11-26 13:35:00,Kabak Çekirdeği,"Atıştırmak için harika, çıtır kavrulmuş kabak çekirdeği.",kabak-cekirdegi,false,10
+85,2025-03-22 15:55:00,DIY Dudak Balsamı Yapım Seti,Evde kendi aromalı dudak balsamlarınızı yapmak için komple set.,diy-dudak-balsami-yapim-seti,true,22
+86,2024-08-24 10:15:00,Evcil Hayvan Kıl Temizleme Silindiri,Mobilyalardan evcil hayvan kıllarını temizlemek için özel olarak tasarlanmış lint silindiri.,evcil-hayvan-kil-temizleme-silindiri,false,12
+87,2025-11-29 12:40:00,Çok Renkli LED Şerit Işıklar,Yaratıcı ev aydınlatma tasarımları için esnek LED ışıklar.,cok-renkli-led-serit-isiklar,true,1
+88,2025-09-27 14:20:00,Duvar Planlayıcısı,Programları organize etmek için büyük duvar planlayıcısı.,duvar-planlayicisi,false,18
+89,2025-06-04 16:05:00,Lahana Coleslaw Karışımı,Salatalar için taze lahana ve havuç coleslaw karışımı.,lahana-coleslaw-karisimi,true,10
+90,2024-11-22 11:30:00,Soğuk Demleme Kahve Makinesi,Acılık olmadan pürüzsüz aromalı kahve demler.,soguk-demleme-kahve-makinesi,true,2
+91,2025-08-26 13:45:00,Çikolatalı Fındık Kreması,"Çikolata ve fındıktan yapılan kremalı krem, tost için mükemmel.",cikolatali-findik-kremasi,true,10
+92,2025-12-17 15:10:00,Çikolata Parçacıklı Kurabiye Hamuru,Çikolata parçacıklarıyla dolu pişmeye hazır kurabiye hamuru.,cikolata-parcacikli-kurabiye-hamuru,true,10
+93,2025-11-25 12:25:00,Manyetik Perde Tutucuları,Perdeler veya drapeler için kullanımı kolay tutucular.,manyetik-perde-tutuculari-2,false,4
+94,2025-11-30 14:40:00,Sızdırmaz Kapaklı Seyahat Bardağı,İçecekleri sıcak veya soğuk tutan paslanmaz çelik seyahat bardağı.,sizdirmaz-kapakli-seyahat-bardagi,true,17
+95,2026-01-09 16:15:00,Çevre Dostu Yoga Matı,Çevre bilincine sahip yogiler için biyolojik olarak parçalanabilir materyallerden yapılmış.,cevre-dostu-yoga-mati,false,6
+96,2025-05-16 11:55:00,Klasik Beyzbol Şapkası,Her kıyafete sportif dokunuş katan zamansız beyzbol şapkası.,klasik-beyzbol-sapkasi,true,5
+97,2025-05-06 13:20:00,Sarımsaklı Otlu Izgara Tavuk,Sarımsak ve otlarla baharatlanmış marine edilmiş ızgara tavuk göğsü.,sarimsakli-otlu-izgara-tavuk,false,10
+98,2025-04-08 15:35:00,Köri Soslu Mercimek Salatası,"Mercimek, sebze ve köri soslu doyurucu salata.",kori-soslu-mercimek-salatasi,false,10
+99,2025-07-13 12:10:00,Yüksek Hızlı El Blenderı,Çorbalar ve smoothie'ler için güçlü el blenderı.,yuksek-hizli-el-blenderi,false,2
+100,2025-01-08 14:50:00,Organik Badem Unu,Pişirme veya yemek yapmak için ince öğütülmüş badem.,organik-badem-unu,true,6

@@ -12,12 +12,10 @@ export async function GET(request: NextRequest) {
     const offset = page * limit;
 
     try {
-        // Önce toplam ürün sayısını al
         const { count } = await supabase
             .from('products')
             .select('*', { count: 'exact', head: true });
 
-        // Ürünleri al
         const { data, error } = await supabase
             .from('products')
             .select(

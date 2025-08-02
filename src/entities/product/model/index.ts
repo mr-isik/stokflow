@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const productSchema = z.object({
-    id: z.string(),
+    id: z.number(),
     title: z.string(),
     slug: z.string(),
     product_images: z.array(
@@ -23,7 +23,6 @@ export const productsResponseSchema = z.array(productSchema);
 export type Product = z.infer<typeof productSchema>;
 export type ProductsResponse = z.infer<typeof productsResponseSchema>;
 
-// Paginated response schema
 export const paginatedProductsSchema = z.object({
     data: productsResponseSchema,
     pagination: z.object({

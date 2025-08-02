@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
 import { productsAPI } from '../api';
 import type { PaginatedProductsResponse } from '../model';
 
@@ -6,7 +6,7 @@ export const useInfiniteQueryProducts = () => {
     return useInfiniteQuery<
         PaginatedProductsResponse,
         Error,
-        PaginatedProductsResponse,
+        InfiniteData<PaginatedProductsResponse>,
         string[],
         number
     >({
