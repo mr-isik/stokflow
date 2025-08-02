@@ -4,7 +4,7 @@ export const TEST_LABELS = {
     // Form Labels
     EMAIL: /email/i,
     PASSWORD: /şifre/i,
-    SIGNUP_PASSWORD: /Şifre/,
+    SIGNUP_PASSWORD: 'Şifre',
     PASSWORD_CONFIRM: /şifreyi onayla/i,
     NAME: /ad soyad/i,
 
@@ -38,7 +38,7 @@ export const ERROR_MESSAGES = {
     PASSWORD_MISMATCH: /şifreler eşleşmiyor/i,
 
     // Name Errors
-    NAME_REQUIRED: /ad soyad gerekli/i,
+    NAME_REQUIRED: /ad ve soyad gerekli/i,
     NAME_REQUIRED_ALT: /i̇sim gerekli/i,
 
     // Server Errors
