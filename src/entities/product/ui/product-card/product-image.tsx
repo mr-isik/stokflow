@@ -11,7 +11,7 @@ function ProductImage({ image, title }: ProductImageProps) {
         <Image
             src={image.url}
             alt={image.alt || title}
-            className="w-full h-64 object-cover"
+            className="w-full h-64 object-cover rounded-b-none"
             classNames={{
                 wrapper: 'w-full h-64',
                 img: 'w-full h-64 object-cover',

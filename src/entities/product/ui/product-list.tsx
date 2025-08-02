@@ -7,12 +7,7 @@ import type { Product, PaginatedProductsResponse } from '../model';
 import { useInfiniteQueryProducts } from '../queries';
 import { ProductCard } from './product-card';
 
-interface ProductListProps {
-    onAddToCart?: (productId: number) => void;
-    onProductClick?: (productId: number, slug: string) => void;
-}
-
-export function ProductList({ onAddToCart, onProductClick }: ProductListProps) {
+export function ProductList() {
     const observerRef = useRef<HTMLDivElement>(null);
 
     const {
@@ -24,6 +19,16 @@ export function ProductList({ onAddToCart, onProductClick }: ProductListProps) {
         isFetchingNextPage,
         status,
     } = useInfiniteQueryProducts();
+
+    const onProductClick = useCallback((productId: number, slug: string) => {
+        console.log('Navigate to product:', { productId, slug });
+        // Implement your navigation logic here
+    }, []);
+
+    const onAddToCart = useCallback(async (productId: number) => {
+        console.log('Adding to cart:', productId);
+        // Implement your add to cart logic here
+    }, []);
 
     useEffect(() => {
         const currentObserverRef = observerRef.current;

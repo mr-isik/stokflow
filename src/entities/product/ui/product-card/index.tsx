@@ -49,25 +49,24 @@ export function ProductCard({
     return (
         <Card
             className={`group hover:shadow-lg transition-all duration-300 shadow-none border border-foreground-200 ${className}`}
-            onPress={handleProductClick}
         >
-            <CardBody className="p-0">
+            <CardBody
+                className="p-0 cursor-pointer"
+                onClick={handleProductClick}
+            >
                 {/* Image Section */}
                 <div className="relative overflow-hidden">
                     <ProductImage image={featuredImage} title={product.title} />
-
-                    {/* Overlay on hover */}
-                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
             </CardBody>
 
             <CardFooter className="flex-col items-start gap-2 p-4">
                 {/* Product Info */}
-                <div className="w-full flex flex-col items-start">
-                    <h3
-                        className="font-semibold text-left line-clamp-2 mb-2 hover:text-primary transition-colors cursor-pointer"
-                        onClick={handleProductClick}
-                    >
+                <div
+                    className="w-full flex flex-col items-start cursor-pointer"
+                    onClick={handleProductClick}
+                >
+                    <h3 className="font-semibold text-left line-clamp-2 mb-2">
                         {product.title}
                     </h3>
 
