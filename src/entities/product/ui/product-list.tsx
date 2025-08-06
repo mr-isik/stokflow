@@ -6,9 +6,11 @@ import { ProductsSkeleton } from './product-skeleton';
 import type { Product, PaginatedProductsResponse } from '../model';
 import { useInfiniteQueryProducts } from '../queries';
 import { ProductCard } from './product-card';
+import { useRouter } from 'next/navigation';
 
 export function ProductList() {
     const observerRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
     const {
         data,
@@ -20,10 +22,13 @@ export function ProductList() {
         status,
     } = useInfiniteQueryProducts();
 
-    const onProductClick = useCallback((productId: number, slug: string) => {
-        console.log('Navigate to product:', { productId, slug });
-        // Implement your navigation logic here
-    }, []);
+    const onProductClick = useCallback(
+        (productId: number, slug: string) => {
+            router.push(`/${slug}`);
+            // Implement your navigation logic here
+        },
+        [router]
+    );
 
     const onAddToCart = useCallback(async (productId: number) => {
         console.log('Adding to cart:', productId);

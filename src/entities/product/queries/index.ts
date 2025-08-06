@@ -1,4 +1,8 @@
-import { useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
+import {
+    useInfiniteQuery,
+    InfiniteData,
+    useQuery,
+} from '@tanstack/react-query';
 import { productsAPI } from '../api';
 import type { PaginatedProductsResponse } from '../model';
 
@@ -25,5 +29,15 @@ export const useInfiniteQueryProducts = () => {
             const { pagination } = firstPage;
             return pagination.hasPreviousPage ? pagination.page - 1 : undefined;
         },
+    });
+};
+
+export const useQueryProductDetail = (slug: string) => {
+    return useQuery({
+        queryKey: ['productDetail', slug],
+        queryFn: () => productsAPI.getProductDetail(slug),
+        enabled: !!slug,
+        refetchOnWindowFocus: false,
+        retry: 1,
     });
 };

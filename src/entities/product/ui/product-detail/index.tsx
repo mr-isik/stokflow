@@ -1,16 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardBody, Breadcrumbs, BreadcrumbItem } from '@heroui/react';
-import type { Product, ProductVariant } from '../../model';
+import { useRouter } from 'next/navigation';
+import type { ProductVariant } from '../../model';
 import ProductImageGallery from './product-image-gallery';
 import ProductInfo from './product-info';
 import ProductVariants from './product-variants';
-import ProductFeatures from './product-features';
 import ProductReviews from './product-reviews';
+import ProductDetailSkeleton from './product-detail-skeleton';
+import ErrorDisplay from './error-display';
+import { useQueryProductDetail } from '../../queries';
 
 interface ProductDetailProps {
-    product: Product;
+    slug: string;
     onAddToCart?: (
         productId: number,
         variantId: number,
@@ -20,14 +23,60 @@ interface ProductDetailProps {
 }
 
 export function ProductDetail({
-    product,
+    slug: _slug,
     onAddToCart,
     onVariantChange,
 }: ProductDetailProps) {
-    const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
-        product.product_variants[0]
-    );
+    const router = useRouter();
+    const {
+        data: product,
+        isLoading,
+        error,
+        refetch,
+    } = useQueryProductDetail(_slug);
+
+    const [selectedVariant, setSelectedVariant] = useState<ProductVariant>();
     const [quantity, setQuantity] = useState(1);
+
+    // Set initial variant when product is loaded
+    useEffect(() => {
+        if (product?.product_variants?.[0] && !selectedVariant) {
+            setSelectedVariant(product.product_variants[0]);
+        }
+    }, [product, selectedVariant]);
+
+    // Loading state with skeleton
+    if (isLoading) {
+        return <ProductDetailSkeleton />;
+    }
+
+    // Error state with professional error display
+    if (error) {
+        const isNetworkError =
+            error.message.includes('network') ||
+            error.message.includes('fetch');
+
+        return (
+            <ErrorDisplay
+                type={isNetworkError ? 'network' : 'error'}
+                message={error.message}
+                onRetry={() => refetch()}
+                onGoHome={() => router.push('/')}
+            />
+        );
+    }
+
+    // Not found state
+    if (!product) {
+        return (
+            <ErrorDisplay type="not-found" onGoHome={() => router.push('/')} />
+        );
+    }
+
+    // Don't render until we have both product and selectedVariant
+    if (!selectedVariant) {
+        return <ProductDetailSkeleton />;
+    }
 
     const handleVariantChange = (variant: ProductVariant) => {
         setSelectedVariant(variant);
@@ -35,7 +84,7 @@ export function ProductDetail({
     };
 
     const handleAddToCart = () => {
-        if (!onAddToCart) return;
+        if (!onAddToCart || !product || !selectedVariant) return;
         onAddToCart(product.id, selectedVariant.id, quantity);
     };
 
@@ -45,17 +94,7 @@ export function ProductDetail({
             <div className="mb-6">
                 <Breadcrumbs>
                     <BreadcrumbItem href="/">Ana Sayfa</BreadcrumbItem>
-                    <BreadcrumbItem
-                        href={`/category/${product.category.toLowerCase()}`}
-                    >
-                        {product.category}
-                    </BreadcrumbItem>
-                    <BreadcrumbItem
-                        href={`/brand/${product.brand.toLowerCase()}`}
-                    >
-                        {product.brand}
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>{product.title}</BreadcrumbItem>
+                    <BreadcrumbItem>{product?.title}</BreadcrumbItem>
                 </Breadcrumbs>
             </div>
 
@@ -86,23 +125,13 @@ export function ProductDetail({
 
             {/* Additional Sections */}
             <div className="space-y-8">
-                {/* Product Features */}
-                <Card>
-                    <CardBody>
-                        <ProductFeatures
-                            description={product.description}
-                            features={product.features}
-                        />
-                    </CardBody>
-                </Card>
-
                 {/* Reviews */}
                 <Card>
                     <CardBody>
                         <ProductReviews
-                            reviews={product.reviews}
-                            averageRating={product.average_rating}
-                            totalReviews={product.total_reviews}
+                            reviews={[]}
+                            averageRating={4.2}
+                            totalReviews={0}
                         />
                     </CardBody>
                 </Card>

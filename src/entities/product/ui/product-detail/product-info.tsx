@@ -41,43 +41,15 @@ export function ProductInfo({
         }
     };
 
-    const renderStars = (rating: number) => {
-        const stars = [];
-        for (let i = 1; i <= 5; i++) {
-            stars.push(
-                i <= rating ? (
-                    <IoStar key={i} className="w-4 h-4 text-yellow-500" />
-                ) : (
-                    <IoStarOutline key={i} className="w-4 h-4 text-gray-300" />
-                )
-            );
-        }
-        return stars;
-    };
-
     const isOutOfStock = selectedVariant.stock === 0;
 
     return (
         <div className="space-y-6">
             {/* Brand & Title */}
             <div>
-                <p className="text-sm text-default-500 mb-1">{product.brand}</p>
                 <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
                     {product.title}
                 </h1>
-            </div>
-
-            {/* Rating & Reviews */}
-            <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                    {renderStars(Math.floor(product.average_rating))}
-                </div>
-                <span className="text-sm font-medium text-foreground">
-                    {product.average_rating.toFixed(1)}
-                </span>
-                <span className="text-sm text-default-500">
-                    ({product.total_reviews} değerlendirme)
-                </span>
             </div>
 
             {/* Price */}

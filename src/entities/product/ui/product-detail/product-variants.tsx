@@ -14,14 +14,34 @@ export function ProductVariants({
     selectedVariant,
     onVariantChange,
 }: ProductVariantsProps) {
-    // Group variants by color and size
-    const colors = [...new Set(variants.map(v => v.color).filter(Boolean))];
-    const sizes = [...new Set(variants.map(v => v.size).filter(Boolean))];
+    // Extract options from variant options
+    const getOptionValue = (variant: ProductVariant, optionName: string) => {
+        return variant.product_variant_options?.find(
+            opt => opt.name.toLowerCase() === optionName.toLowerCase()
+        )?.value;
+    };
+
+    // Group variants by option types
+    const colors = [
+        ...new Set(
+            variants.map(v => getOptionValue(v, 'renk')).filter(Boolean)
+        ),
+    ];
+    const sizes = [
+        ...new Set(
+            variants.map(v => getOptionValue(v, 'beden')).filter(Boolean)
+        ),
+    ];
 
     const getVariantBySelection = (color?: string, size?: string) => {
-        return variants.find(
-            v => (!color || v.color === color) && (!size || v.size === size)
-        );
+        return variants.find(v => {
+            const variantColor = getOptionValue(v, 'renk');
+            const variantSize = getOptionValue(v, 'beden');
+            return (
+                (!color || variantColor === color) &&
+                (!size || variantSize === size)
+            );
+        });
     };
 
     const isVariantAvailable = (color?: string, size?: string) => {
@@ -33,6 +53,9 @@ export function ProductVariants({
         return null; // Don't show variant selector if there's only one variant
     }
 
+    const selectedColor = getOptionValue(selectedVariant, 'renk');
+    const selectedSize = getOptionValue(selectedVariant, 'beden');
+
     return (
         <div className="space-y-4">
             {/* Color Selection */}
@@ -41,15 +64,15 @@ export function ProductVariants({
                     <p className="text-sm font-medium text-foreground">
                         Renk:{' '}
                         <span className="font-normal text-default-600">
-                            {selectedVariant.color}
+                            {selectedColor}
                         </span>
                     </p>
                     <div className="flex flex-wrap gap-2">
                         {colors.map(color => {
-                            const isSelected = selectedVariant.color === color;
+                            const isSelected = selectedColor === color;
                             const isAvailable = isVariantAvailable(
                                 color,
-                                selectedVariant.size
+                                selectedSize
                             );
 
                             return (
@@ -67,7 +90,7 @@ export function ProductVariants({
                                             const variant =
                                                 getVariantBySelection(
                                                     color,
-                                                    selectedVariant.size
+                                                    selectedSize
                                                 );
                                             if (variant) {
                                                 onVariantChange(variant);
@@ -90,14 +113,14 @@ export function ProductVariants({
                     <p className="text-sm font-medium text-foreground">
                         Beden:{' '}
                         <span className="font-normal text-default-600">
-                            {selectedVariant.size}
+                            {selectedSize}
                         </span>
                     </p>
                     <div className="flex flex-wrap gap-2">
                         {sizes.map(size => {
-                            const isSelected = selectedVariant.size === size;
+                            const isSelected = selectedSize === size;
                             const isAvailable = isVariantAvailable(
-                                selectedVariant.color,
+                                selectedColor,
                                 size
                             );
 
@@ -115,7 +138,7 @@ export function ProductVariants({
                                         if (isAvailable) {
                                             const variant =
                                                 getVariantBySelection(
-                                                    selectedVariant.color,
+                                                    selectedColor,
                                                     size
                                                 );
                                             if (variant) {

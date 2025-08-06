@@ -6,45 +6,52 @@ export const productImageSchema = z.object({
     is_featured: z.boolean(),
 });
 
+export const productVariantOptionSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    value: z.string(),
+});
+
 export const productVariantSchema = z.object({
     id: z.number(),
     price: z.number(),
-    size: z.string().optional(),
-    color: z.string().optional(),
     stock: z.number(),
     sku: z.string(),
+    compare_at_price: z.number().optional(),
+    product_variant_options: z.array(productVariantOptionSchema),
 });
 
-export const reviewSchema = z.object({
+export const productReviewSchema = z.object({
     id: z.number(),
-    user_name: z.string(),
     rating: z.number().min(1).max(5),
     comment: z.string(),
     created_at: z.string(),
-    helpful_count: z.number(),
 });
 
 export const productSchema = z.object({
     id: z.number(),
     title: z.string(),
     slug: z.string(),
-    description: z.string(),
-    brand: z.string(),
-    category: z.string(),
-    features: z.array(z.string()),
     product_images: z.array(productImageSchema),
+    product_variants: z.array(
+        z.object({
+            price: z.number(),
+        })
+    ),
+});
+
+export const detailedProductSchema = productSchema.extend({
+    description: z.string(),
     product_variants: z.array(productVariantSchema),
-    reviews: z.array(reviewSchema),
-    average_rating: z.number(),
-    total_reviews: z.number(),
 });
 
 export const productsResponseSchema = z.array(productSchema);
 
 export type Product = z.infer<typeof productSchema>;
+export type DetailedProduct = z.infer<typeof detailedProductSchema>;
 export type ProductVariant = z.infer<typeof productVariantSchema>;
 export type ProductImage = z.infer<typeof productImageSchema>;
-export type Review = z.infer<typeof reviewSchema>;
+export type Review = z.infer<typeof productReviewSchema>;
 export type ProductsResponse = z.infer<typeof productsResponseSchema>;
 
 export const paginatedProductsSchema = z.object({

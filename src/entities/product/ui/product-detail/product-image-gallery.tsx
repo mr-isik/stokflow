@@ -9,7 +9,7 @@ interface ProductImageGalleryProps {
     images: ProductImage[];
 }
 
-export function ProductImageGallery({ images }: ProductImageGalleryProps) {
+export function ProductImageGallery({ images = [] }: ProductImageGalleryProps) {
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
     const handlePrevious = () => {
