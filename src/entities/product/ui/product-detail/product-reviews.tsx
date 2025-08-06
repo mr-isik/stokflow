@@ -155,7 +155,6 @@ export function ProductReviews({
                             <div key={review.id} className="space-y-3">
                                 <div className="flex items-start gap-3">
                                     <Avatar
-                                        name={review.user_name}
                                         size="sm"
                                         className="flex-shrink-0"
                                     />
@@ -163,9 +162,9 @@ export function ProductReviews({
                                     <div className="flex-1 space-y-2">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="font-medium text-foreground">
+                                                {/* <p className="font-medium text-foreground">
                                                     {review.user_name}
-                                                </p>
+                                                </p> */}
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex gap-1">
                                                         {renderStars(
@@ -198,46 +197,6 @@ export function ProductReviews({
                                         <p className="text-default-700 leading-relaxed">
                                             {review.comment}
                                         </p>
-
-                                        <div className="flex items-center gap-2">
-                                            <Button
-                                                size="sm"
-                                                variant="light"
-                                                startContent={
-                                                    helpfulReviews.has(
-                                                        review.id
-                                                    ) ? (
-                                                        <IoThumbsUp className="w-4 h-4" />
-                                                    ) : (
-                                                        <IoThumbsUpOutline className="w-4 h-4" />
-                                                    )
-                                                }
-                                                onPress={() =>
-                                                    handleHelpfulClick(
-                                                        review.id
-                                                    )
-                                                }
-                                                className={`
-                                                    text-xs
-                                                    ${
-                                                        helpfulReviews.has(
-                                                            review.id
-                                                        )
-                                                            ? 'text-primary'
-                                                            : 'text-default-600'
-                                                    }
-                                                `}
-                                            >
-                                                Faydalı (
-                                                {review.helpful_count +
-                                                    (helpfulReviews.has(
-                                                        review.id
-                                                    )
-                                                        ? 1
-                                                        : 0)}
-                                                )
-                                            </Button>
-                                        </div>
                                     </div>
                                 </div>
 
