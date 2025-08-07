@@ -35,9 +35,8 @@ export const productsAPI = {
         try {
             const response = await apiClient.get<DetailedProduct>(
                 `/products/${slug}`,
-                {
-                    response: detailedProductSchema,
-                }
+                {},
+                detailedProductSchema
             );
             return response;
         } catch {

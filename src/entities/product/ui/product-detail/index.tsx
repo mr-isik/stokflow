@@ -126,7 +126,7 @@ export function ProductDetail({
             {/* Additional Sections */}
             <div className="space-y-8">
                 {/* Reviews */}
-                <Card>
+                <Card className="shadow-none border border-gray-200">
                     <CardBody>
                         <ProductReviews productId={product.id} />
                     </CardBody>

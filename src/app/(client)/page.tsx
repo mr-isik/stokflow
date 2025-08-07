@@ -1,12 +1,18 @@
+import { prefetchInfiniteProducts } from '@/entities/product/queries/prefetch';
 import { ProductList } from '@/entities/product/ui/product-list';
 import MaxWidthWrapper from '@/shared/ui/max-width-wrapper';
+import { HydrationBoundary } from '@tanstack/react-query';
 import React from 'react';
 
-const HomePage = () => {
+const HomePage = async () => {
+    const { dehydratedState } = await prefetchInfiniteProducts();
+
     return (
-        <MaxWidthWrapper className="py-8">
-            <ProductList />
-        </MaxWidthWrapper>
+        <HydrationBoundary state={dehydratedState}>
+            <MaxWidthWrapper className="py-8">
+                <ProductList />
+            </MaxWidthWrapper>
+        </HydrationBoundary>
     );
 };
 

@@ -204,7 +204,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                         {reviews.map((review, index) => (
                             <div
                                 key={review.id}
-                                className="bg-default-50 rounded-xl p-6 border border-default-200 hover:shadow-sm transition-shadow"
+                                className="bg-default-50 rounded-xl p-6 border border-default-200"
                             >
                                 <div className="flex items-start gap-4">
                                     <Avatar
@@ -251,10 +251,6 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                                         </p>
                                     </div>
                                 </div>
-
-                                {index < reviews.length - 1 && (
-                                    <Divider className="mt-6" />
-                                )}
                             </div>
                         ))}
                     </div>

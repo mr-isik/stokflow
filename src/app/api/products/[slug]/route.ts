@@ -6,6 +6,14 @@ export async function GET(
 ) {
     const { slug } = await params;
 
+    // Statik dosya isteklerini filtrele
+    if (slug.includes('.')) {
+        return Response.json(
+            { message: 'Geçersiz ürün slug' },
+            { status: 400 }
+        );
+    }
+
     const supabase = await createClient();
 
     try {
