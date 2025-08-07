@@ -128,11 +128,7 @@ export function ProductDetail({
                 {/* Reviews */}
                 <Card>
                     <CardBody>
-                        <ProductReviews
-                            reviews={[]}
-                            averageRating={4.2}
-                            totalReviews={0}
-                        />
+                        <ProductReviews productId={product.id} />
                     </CardBody>
                 </Card>
             </div>

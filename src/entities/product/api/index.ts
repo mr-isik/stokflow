@@ -4,7 +4,6 @@ import {
     detailedProductSchema,
     PaginatedProductsResponse,
     paginatedProductsSchema,
-    Product,
 } from '../model';
 
 interface GetProductsParams {

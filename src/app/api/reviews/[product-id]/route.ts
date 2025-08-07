@@ -1,7 +1,11 @@
 import { createClient } from '@/shared/lib/supabase/server';
 import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ 'product-id': string }> }
+) {
+    const { 'product-id': id } = await params;
     const supabase = await createClient();
 
     // URL'den pagination parametrelerini al
@@ -12,15 +16,16 @@ export async function GET(request: NextRequest) {
     const offset = page * limit;
 
     try {
+        // Toplam review sayısını al
         const { count } = await supabase
-            .from('products')
-            .select('id', { count: 'exact', head: true });
+            .from('product_reviews')
+            .select('id', { count: 'exact', head: true })
+            .eq('product_id', id);
 
         const { data, error } = await supabase
-            .from('products')
-            .select(
-                'id, title, slug, product_images(url, alt, is_featured), product_variants(price)'
-            )
+            .from('product_reviews')
+            .select('id, rating, comment, created_at, user_id, product_id')
+            .eq('product_id', id)
             .range(offset, offset + limit - 1)
             .order('created_at', { ascending: false });
 
@@ -43,29 +48,6 @@ export async function GET(request: NextRequest) {
         };
 
         return Response.json(response, { status: 200 });
-    } catch (error) {
-        const errorMessage =
-            error instanceof Error ? error.message : 'Unknown error';
-        return Response.json({ error: errorMessage }, { status: 500 });
-    }
-}
-
-export async function POST(request: Request) {
-    const supabase = await createClient();
-    const body = await request.json();
-
-    try {
-        const { data, error } = await supabase
-            .from('products')
-            .insert([body])
-            .select()
-            .single();
-
-        if (error) {
-            return Response.json({ error: error.message }, { status: 400 });
-        }
-
-        return Response.json(data, { status: 201 });
     } catch (error) {
         const errorMessage =
             error instanceof Error ? error.message : 'Unknown error';

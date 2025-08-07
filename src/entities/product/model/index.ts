@@ -21,13 +21,6 @@ export const productVariantSchema = z.object({
     product_variant_options: z.array(productVariantOptionSchema),
 });
 
-export const productReviewSchema = z.object({
-    id: z.number(),
-    rating: z.number().min(1).max(5),
-    comment: z.string(),
-    created_at: z.string(),
-});
-
 export const productSchema = z.object({
     id: z.number(),
     title: z.string(),
@@ -51,7 +44,6 @@ export type Product = z.infer<typeof productSchema>;
 export type DetailedProduct = z.infer<typeof detailedProductSchema>;
 export type ProductVariant = z.infer<typeof productVariantSchema>;
 export type ProductImage = z.infer<typeof productImageSchema>;
-export type Review = z.infer<typeof productReviewSchema>;
 export type ProductsResponse = z.infer<typeof productsResponseSchema>;
 
 export const paginatedProductsSchema = z.object({
