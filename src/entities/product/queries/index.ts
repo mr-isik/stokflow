@@ -1,19 +1,13 @@
+import { InfiniteData } from '@tanstack/react-query';
 import {
-    useInfiniteQuery,
-    InfiniteData,
-    useQuery,
-} from '@tanstack/react-query';
+    useAppQuery,
+    useAppInfiniteQuery,
+} from '@/shared/hooks/use-error-handler';
 import { productsAPI } from '../api';
 import type { PaginatedProductsResponse } from '../model';
 
 export const useInfiniteQueryProducts = () => {
-    return useInfiniteQuery<
-        PaginatedProductsResponse,
-        Error,
-        InfiniteData<PaginatedProductsResponse>,
-        string[],
-        number
-    >({
+    return useAppInfiniteQuery({
         queryKey: ['products'],
         queryFn: ({ pageParam = 0 }) =>
             productsAPI.getProducts({
@@ -21,11 +15,11 @@ export const useInfiniteQueryProducts = () => {
                 pageSize: 10,
             }),
         initialPageParam: 0,
-        getNextPageParam: lastPage => {
+        getNextPageParam: (lastPage: PaginatedProductsResponse) => {
             const { pagination } = lastPage;
             return pagination.hasNextPage ? pagination.page + 1 : undefined;
         },
-        getPreviousPageParam: firstPage => {
+        getPreviousPageParam: (firstPage: PaginatedProductsResponse) => {
             const { pagination } = firstPage;
             return pagination.hasPreviousPage ? pagination.page - 1 : undefined;
         },
@@ -33,7 +27,7 @@ export const useInfiniteQueryProducts = () => {
 };
 
 export const useQueryProductDetail = (slug: string) => {
-    return useQuery({
+    return useAppQuery({
         queryKey: ['productDetail', slug],
         queryFn: () => productsAPI.getProductDetail(slug),
         enabled: !!slug,

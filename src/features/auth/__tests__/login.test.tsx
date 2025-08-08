@@ -187,7 +187,9 @@ describe('LoginForm - Validasyon Testleri 🧪', () => {
         test('geçerli form gönderildiğinde API çağrısı yapılır', async () => {
             mockAuthLogin.mockResolvedValue({
                 user: TEST_DATA.MOCK_USER,
-                token: TEST_DATA.MOCK_TOKEN,
+                session: {
+                    access_token: TEST_DATA.MOCK_TOKEN,
+                },
             });
 
             render(

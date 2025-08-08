@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useAppQuery } from '@/shared/hooks/use-error-handler';
 import { GetReviewsParams, reviewAPI } from '../api';
 
 export const useReviews = ({
@@ -6,7 +6,7 @@ export const useReviews = ({
     page = 0,
     limit = 10,
 }: GetReviewsParams) => {
-    return useQuery({
+    return useAppQuery({
         queryKey: ['reviews', productId, page, limit],
         queryFn: () => reviewAPI.getReviews({ productId, page, limit }),
         enabled: !!productId,

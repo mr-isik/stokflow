@@ -439,8 +439,8 @@ describe('SignupForm - Validasyon Testleri 🧪', () => {
     describe('🎯 Başarılı Form Submission', () => {
         test('geçerli tüm bilgiler gönderildiğinde API çağrısı yapılır', async () => {
             mockAuthSignup.mockResolvedValue({
-                user: { id: '1', email: 'test@test.com', name: 'Test User' },
-                token: 'fake-token',
+                user: TEST_DATA.MOCK_USER,
+                access_token: TEST_DATA.MOCK_TOKEN,
             });
 
             render(
@@ -482,8 +482,8 @@ describe('SignupForm - Validasyon Testleri 🧪', () => {
     describe('🎯 Başarılı Form Submission', () => {
         test('geçerli tüm bilgiler gönderildiğinde API çağrısı yapılır', async () => {
             mockAuthSignup.mockResolvedValue({
-                user: { id: '1', email: 'test@test.com', name: 'Test User' },
-                token: 'fake-token',
+                user: TEST_DATA.MOCK_USER,
+                access_token: TEST_DATA.MOCK_TOKEN,
             });
 
             render(
@@ -631,8 +631,8 @@ describe('SignupForm - Validasyon Testleri 🧪', () => {
 
         test('redirect ile form başarılı signup sonrası success callback çağırır', async () => {
             mockAuthSignup.mockResolvedValue({
-                user: { id: '1', email: 'test@test.com', name: 'Test User' },
-                token: 'fake-token',
+                user: TEST_DATA.MOCK_USER,
+                access_token: TEST_DATA.MOCK_TOKEN,
             });
 
             render(
@@ -741,8 +741,8 @@ describe('SignupForm - Validasyon Testleri 🧪', () => {
 
         test('Turkish karakterli şifre kabul edilir', async () => {
             mockAuthSignup.mockResolvedValue({
-                user: { id: '1', email: 'test@test.com', name: 'Test User' },
-                token: 'fake-token',
+                user: TEST_DATA.MOCK_USER,
+                access_token: TEST_DATA.MOCK_TOKEN,
             });
 
             render(

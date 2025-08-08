@@ -1,19 +1,12 @@
-import { apiClient } from '@/shared/api';
+import { apiClient, ApiError } from '@/shared/api';
 import {
+    CurrentUserData,
+    currentUserResponseSchema,
     LoginFormData,
+    LoginResponseData,
+    loginResponseSchema,
     loginSchema,
-    SignupFormData,
-    signupSchema,
 } from '../model';
-
-export interface AuthResponse {
-    user: {
-        id: string;
-        email: string;
-        name: string;
-    };
-    token: string;
-}
 
 export interface AuthError {
     message: string;
@@ -21,48 +14,55 @@ export interface AuthError {
 }
 
 export const AuthAPI = {
-    async login(data: LoginFormData): Promise<AuthResponse> {
-        try {
-            const res = await apiClient.post('/auth/login', data, {
-                request: loginSchema,
-            });
-            return res;
-        } catch {
-            throw new Error(
-                'Giriş yapılamadı. Email veya şifrenizi kontrol edin.'
-            );
-        }
+    async login(data: LoginFormData): Promise<LoginResponseData> {
+        const res = await apiClient.post('/auth/login', data, {
+            request: loginSchema,
+            response: loginResponseSchema,
+        });
+        return res;
     },
 
     async signup(data: {
         email: string;
         password: string;
         name: string;
-    }): Promise<AuthResponse> {
-        try {
-            const res = await apiClient.post('/auth/signup', data);
-            return res;
-        } catch (error) {
-            throw new Error(
-                'Kayıt oluşturulamadı. Lütfen bilgilerinizi kontrol edin.'
-            );
-        }
+    }): Promise<CurrentUserData> {
+        const res = await apiClient.post('/auth/signup', data);
+        return res;
     },
 
     async logout(): Promise<void> {
-        try {
-            await apiClient.post('/auth/logout');
-        } catch {
-            throw new Error('Çıkış yapılamadı');
+        await apiClient.post('/auth/logout');
+
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
         }
     },
 
-    async getCurrentUser(): Promise<AuthResponse['user'] | null> {
+    async getCurrentUser(): Promise<CurrentUserData | null> {
         try {
-            const response = await apiClient.get('/auth/me');
-            return response.user;
-        } catch {
+            const response = await apiClient.get(
+                '/users/me',
+                {},
+                currentUserResponseSchema
+            );
+            return response;
+        } catch (error) {
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+            }
             return null;
+        }
+    },
+
+    async validateToken(): Promise<boolean> {
+        try {
+            const user = await this.getCurrentUser();
+            return !!user;
+        } catch {
+            return false;
         }
     },
 };

@@ -32,11 +32,35 @@ export const signupSchema = z
         path: ['confirmPassword'],
     });
 
-// Types
+export const currentUserResponseSchema = z.object({
+    user: z.object({
+        id: z.string(),
+        email: z.string().email(),
+        user_metadata: z.object({
+            name: z.string().max(100).optional(),
+        }),
+    }),
+    access_token: z.string(),
+});
+
+export const loginResponseSchema = z.object({
+    user: z.object({
+        id: z.string(),
+        email: z.string().email(),
+        user_metadata: z.object({
+            name: z.string().max(100).optional(),
+        }),
+    }),
+    session: z.object({
+        access_token: z.string(),
+    }),
+});
+
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type SignupFormData = z.infer<typeof signupSchema>;
+export type CurrentUserData = z.infer<typeof currentUserResponseSchema>;
+export type LoginResponseData = z.infer<typeof loginResponseSchema>;
 
-// Auth User Type
 export interface User {
     id: string;
     name: string;
@@ -46,7 +70,6 @@ export interface User {
     updatedAt: Date;
 }
 
-// Auth State Type
 export interface AuthState {
     user: User | null;
     isLoading: boolean;

@@ -14,8 +14,21 @@ const Providers = ({ children }: Props) => {
         defaultOptions: {
             queries: {
                 refetchOnWindowFocus: false,
-                retry: 2,
-                staleTime: 1000 * 60 * 5,
+                retry: (failureCount, error: any) => {
+                    // 401, 403 gibi auth hatalarında retry yapma
+                    if (
+                        error?.response?.status === 401 ||
+                        error?.response?.status === 403
+                    ) {
+                        return false;
+                    }
+                    return failureCount < 2;
+                },
+                staleTime: 1000 * 60 * 5, // 5 dakika
+                gcTime: 1000 * 60 * 10, // 10 dakika cache'de tut
+            },
+            mutations: {
+                retry: 1,
             },
         },
     });

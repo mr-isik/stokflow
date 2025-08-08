@@ -73,7 +73,9 @@ export const TEST_DATA = {
     MOCK_USER: {
         id: '1',
         email: 'test@test.com',
-        name: 'Test User',
+        user_metadata: {
+            name: 'Test User',
+        },
     },
     MOCK_TOKEN: 'fake-token',
 } as const;

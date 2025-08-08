@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@heroui/react';
 import { IoEye, IoEyeOff } from 'react-icons/io5';
 
@@ -21,7 +21,7 @@ export function SignupForm({ onSuccess, onNavigateToLogin }: SignupFormProps) {
     const [serverError, setServerError] = useState<string>('');
 
     const { handleSubmit, register, formState, onSubmit, isSubmitting } =
-        useSignupForm(message => setServerError(message), onSuccess, '/login');
+        useSignupForm(message => setServerError(message), onSuccess, '/');
 
     const { errors } = formState;
 

@@ -12,25 +12,16 @@ import {
 } from '@heroui/react';
 import { useState } from 'react';
 import { User } from './types';
+import { useAuth } from '@/shared/hooks';
 
 interface UserDropdownProps {
     className?: string;
 }
 
-// Mock user - in real app this would come from auth context
-const MOCK_USER: User = {
-    id: '1',
-    name: 'Ömer Faruk İşik',
-    email: 'omer@example.com',
-    avatar: '/api/placeholder/40/40',
-};
-
 export const UserDropdown = ({ className }: UserDropdownProps) => {
-    const [user, setUser] = useState<User | null>(MOCK_USER); // null = not logged in
-
+    const { user, logout } = useAuth();
     const handleLogout = () => {
-        setUser(null);
-        // Handle logout logic
+        logout();
     };
 
     if (!user) {
@@ -68,15 +59,9 @@ export const UserDropdown = ({ className }: UserDropdownProps) => {
                         variant="light"
                         className="flex items-center gap-3 h-auto p-2 hover:bg-default-100 transition-colors duration-200"
                     >
-                        <Avatar
-                            src={user.avatar}
-                            name={user.name}
-                            size="sm"
-                            className="w-9 h-9 ring-2 ring-default-200"
-                        />
                         <div className="hidden sm:block text-left">
                             <p className="text-sm font-medium text-default-900">
-                                {user.name.split(' ')[0]}
+                                {user.user_metadata.name?.split(' ')[0]}
                             </p>
                             <p className="text-xs text-default-500">Hesabım</p>
                         </div>
@@ -96,7 +81,9 @@ export const UserDropdown = ({ className }: UserDropdownProps) => {
                             href="/profile"
                         >
                             <div>
-                                <p className="font-medium">{user.name}</p>
+                                <p className="font-medium">
+                                    {user.user_metadata.name}
+                                </p>
                                 <p className="text-xs text-default-500">
                                     {user.email}
                                 </p>

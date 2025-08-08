@@ -32,31 +32,45 @@ const generateRequestId = () => Math.random().toString(36).substring(2, 15);
 export const axiosInstance: AxiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     timeout: defaultApiConfig.timeout,
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
 const createApiError = (error: any, code?: string): ApiError => {
+    // Hata mesajını daha akıllı şekilde çıkar
+    let message = 'Unknown API error';
+
+    if (error?.response?.data) {
+        // API response'dan mesaj al
+        const responseData = error.response.data;
+        message =
+            responseData.message ||
+            responseData.error ||
+            responseData.error_description ||
+            message;
+    } else if (error?.message) {
+        // Axios error mesajı
+        message = error.message;
+    }
+
     return {
-        message: error?.message || 'Unknown API error',
+        message,
         status: error?.response?.status,
-        code: code || error?.code,
+        code: code || error?.code || error?.response?.data?.code,
         details: error?.response?.data,
         timestamp: new Date(),
         requestId: error?.config?.requestId,
     };
 };
 
-// Retry logic helpers
 const shouldRetry = (error: AxiosError, config: any): boolean => {
     const retryCount = config.retryCount || 0;
     const maxRetries = config.maxRetries || defaultApiConfig.maxRetries;
 
-    // Don't retry if max retries reached
     if (retryCount >= maxRetries) return false;
 
-    // Only retry on network errors or 5xx status codes
     if (!error.response) return true; // Network error
     if (error.response.status >= 500) return true; // Server error
 
@@ -87,14 +101,33 @@ axiosInstance.interceptors.request.use(
         config.requestId = requestId;
         config.startTime = Date.now();
 
-        // FIXME: Add auth token if available
-        const token = 'example-token';
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        // Token'ı localStorage'dan al
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('auth_token');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
         }
 
         // Log request if enabled
         if (defaultApiConfig.enableLogging) {
+            // User ID'yi localStorage'dan al
+            let userId = 'anonymous';
+            if (typeof window !== 'undefined') {
+                const savedUser = localStorage.getItem('auth_user');
+                if (savedUser) {
+                    try {
+                        const user = JSON.parse(savedUser);
+                        userId = user.id || 'anonymous';
+                    } catch (error) {
+                        console.warn(
+                            'Failed to parse user from localStorage:',
+                            error
+                        );
+                    }
+                }
+            }
+
             const requestLog: RequestLog = {
                 id: requestId,
                 method: (config.method?.toUpperCase() as any) || 'GET',
@@ -102,8 +135,7 @@ axiosInstance.interceptors.request.use(
                 headers: config.headers as Record<string, string>,
                 data: config.data,
                 timestamp: new Date(),
-                /* FIXME: Implement user ID retrieval */
-                userId: 'example-user-id',
+                userId,
             };
 
             logger.debug('API Request', requestLog);
@@ -142,6 +174,15 @@ axiosInstance.interceptors.response.use(
     async (error: AxiosError) => {
         const config = error.config as any;
         const duration = config?.startTime ? Date.now() - config.startTime : 0;
+
+        if (error.response?.status === 401) {
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+
+                window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+            }
+        }
 
         if (defaultApiConfig.enableLogging) {
             const responseLog: ResponseLog = {
@@ -193,10 +234,8 @@ class ApiClient {
             validationSchema,
             responseSchema,
             skipValidation = false,
-            skipLogging = false,
         } = requestConfig;
 
-        // Validate request data if schema provided
         if (
             this.config.enableValidation &&
             !skipValidation &&

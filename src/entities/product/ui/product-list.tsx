@@ -25,13 +25,11 @@ export function ProductList() {
     const onProductClick = useCallback(
         (productId: number, slug: string) => {
             router.push(`/${slug}`);
-            // Implement your navigation logic here
         },
         [router]
     );
 
-    const onAddToCart = useCallback(async (productId: number) => {
-        console.log('Adding to cart:', productId);
+    const onAddToCart = useCallback(async (_productId: number) => {
         // Implement your add to cart logic here
     }, []);
 
@@ -84,11 +82,6 @@ export function ProductList() {
         [onProductClick]
     );
 
-    // Loading state
-    if (status === 'pending') {
-        return <ProductsSkeleton count={20} />;
-    }
-
     // Error state
     if (status === 'error' || error) {
         return (
@@ -112,8 +105,9 @@ export function ProductList() {
 
     // Flatten all pages data - infinite query returns pages array
     const allProducts =
-        data?.pages?.flatMap((page: PaginatedProductsResponse) => page.data) ||
-        [];
+        data?.pages?.flatMap(
+            page => (page as PaginatedProductsResponse).data
+        ) || [];
 
     // Empty state
     if (allProducts.length === 0 && !isFetching) {
@@ -133,23 +127,23 @@ export function ProductList() {
         <div className="space-y-8">
             {/* Products Grid */}
 
-            {data.pages.map(
-                (page: PaginatedProductsResponse, index: number) => (
-                    <div
-                        key={index}
-                        className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-6"
-                    >
-                        {page.data.map((product: Product) => (
+            {data.pages.map((page, index: number) => (
+                <div
+                    key={index}
+                    className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-6"
+                >
+                    {(page as PaginatedProductsResponse).data.map(
+                        (product: Product) => (
                             <ProductCard
                                 key={product.id}
                                 product={product}
                                 onAddToCart={handleAddToCart}
                                 onProductClick={handleProductClick}
                             />
-                        ))}
-                    </div>
-                )
-            )}
+                        )
+                    )}
+                </div>
+            ))}
 
             {/* Loading more indicator */}
             {isFetchingNextPage && (
