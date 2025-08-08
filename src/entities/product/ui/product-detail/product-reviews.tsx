@@ -8,6 +8,7 @@ import {
     Divider,
     Chip,
     Pagination,
+    Spinner,
 } from '@heroui/react';
 import { IoStar, IoStarOutline } from 'react-icons/io5';
 import { useReviews } from '@/entities/review/queries';
@@ -80,19 +81,6 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
         });
     };
 
-    if (isLoading) {
-        return (
-            <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-foreground">
-                    Müşteri Değerlendirmeleri
-                </h3>
-                <div className="text-center py-8 text-default-500">
-                    Yükleniyor...
-                </div>
-            </div>
-        );
-    }
-
     if (error) {
         return (
             <div className="space-y-6">
@@ -117,159 +105,175 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                 </p>
             </div>
 
-            {/* Rating Summary */}
-            <div className="bg-default-50 rounded-2xl p-6 border border-default-200">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Overall Rating */}
-                    <div className="text-center space-y-4">
-                        <div className="space-y-2">
-                            <div className="text-5xl font-bold text-primary">
-                                {averageRating.toFixed(1)}
-                            </div>
-                            <div className="flex justify-center gap-1">
-                                {renderStars(Math.floor(averageRating), 'md')}
-                            </div>
-                            <p className="text-sm text-default-600 font-medium">
-                                {totalReviews} müşteri değerlendirmesi
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Rating Distribution */}
-                    <div className="space-y-3">
-                        <h5 className="text-sm font-semibold text-foreground mb-4">
-                            Değerlendirme Dağılımı
-                        </h5>
-                        {ratingDistribution.map((count, index) => {
-                            const starCount = 5 - index;
-                            const percentage =
-                                totalReviews > 0
-                                    ? (count / totalReviews) * 100
-                                    : 0;
-
-                            return (
-                                <div
-                                    key={starCount}
-                                    className="flex items-center gap-3 text-sm"
-                                >
-                                    <span className="w-8 text-default-600 font-medium">
-                                        {starCount}★
-                                    </span>
-                                    <Progress
-                                        value={percentage}
-                                        className="flex-1"
-                                        color="primary"
-                                        size="sm"
-                                    />
-                                    <span className="w-8 text-default-600 text-right font-medium">
-                                        {count}
-                                    </span>
+            {isLoading ? (
+                <div className="w-full h-full flex items-center justify-center space-y-4 py-12">
+                    <Spinner />
+                </div>
+            ) : (
+                <>
+                    <div className="bg-default-50 rounded-2xl p-6 border border-default-200">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {/* Overall Rating */}
+                            <div className="text-center space-y-4">
+                                <div className="space-y-2">
+                                    <div className="text-5xl font-bold text-primary">
+                                        {averageRating.toFixed(1)}
+                                    </div>
+                                    <div className="flex justify-center gap-1">
+                                        {renderStars(
+                                            Math.floor(averageRating),
+                                            'md'
+                                        )}
+                                    </div>
+                                    <p className="text-sm text-default-600 font-medium">
+                                        {totalReviews} müşteri değerlendirmesi
+                                    </p>
                                 </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
+                            </div>
 
-            <Divider />
+                            {/* Rating Distribution */}
+                            <div className="space-y-3">
+                                <h5 className="text-sm font-semibold text-foreground mb-4">
+                                    Değerlendirme Dağılımı
+                                </h5>
+                                {ratingDistribution.map((count, index) => {
+                                    const starCount = 5 - index;
+                                    const percentage =
+                                        totalReviews > 0
+                                            ? (count / totalReviews) * 100
+                                            : 0;
 
-            {/* Individual Reviews */}
-            <div className="space-y-6">
-                <div className="flex items-center justify-between px-2">
-                    <h4 className="text-xl font-semibold text-foreground">
-                        Müşteri Yorumları
-                    </h4>
-                    {totalReviews > 0 && (
-                        <span className="text-sm text-default-500 bg-default-100 px-3 py-1 rounded-full">
-                            {pagination?.total || 0} toplam yorum
-                        </span>
-                    )}
-                </div>
-
-                {reviews.length === 0 ? (
-                    <div className="text-center py-12 space-y-4">
-                        <div className="text-6xl">💭</div>
-                        <div className="space-y-2">
-                            <p className="text-lg font-medium text-default-600">
-                                Henüz değerlendirme bulunmuyor
-                            </p>
-                            <p className="text-sm text-default-500">
-                                İlk değerlendirmeyi siz yapın ve diğer
-                                müşterilere yardımcı olun!
-                            </p>
+                                    return (
+                                        <div
+                                            key={starCount}
+                                            className="flex items-center gap-3 text-sm"
+                                        >
+                                            <span className="w-8 text-default-600 font-medium">
+                                                {starCount}★
+                                            </span>
+                                            <Progress
+                                                value={percentage}
+                                                className="flex-1"
+                                                color="primary"
+                                                size="sm"
+                                            />
+                                            <span className="w-8 text-default-600 text-right font-medium">
+                                                {count}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
-                ) : (
-                    <div className="space-y-6">
-                        {reviews.map((review, index) => (
-                            <div
-                                key={review.id}
-                                className="bg-default-50 rounded-xl p-6 border border-default-200"
-                            >
-                                <div className="flex items-start gap-4">
-                                    <Avatar
-                                        size="md"
-                                        className="flex-shrink-0 bg-primary text-white"
-                                        name={`User ${review.user_id}`}
-                                    />
 
-                                    <div className="flex-1 space-y-3">
-                                        <div className="flex items-start justify-between">
-                                            <div className="space-y-2">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex gap-0.5">
-                                                        {renderStars(
-                                                            review.rating
-                                                        )}
+                    <Divider />
+
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between px-2">
+                            <h4 className="text-xl font-semibold text-foreground">
+                                Müşteri Yorumları
+                            </h4>
+                            {totalReviews > 0 && (
+                                <span className="text-sm text-default-500 bg-default-100 px-3 py-1 rounded-full">
+                                    {pagination?.total || 0} toplam yorum
+                                </span>
+                            )}
+                        </div>
+
+                        {reviews.length === 0 ? (
+                            <div className="text-center py-12 space-y-4">
+                                <div className="text-6xl">💭</div>
+                                <div className="space-y-2">
+                                    <p className="text-lg font-medium text-default-600">
+                                        Henüz değerlendirme bulunmuyor
+                                    </p>
+                                    <p className="text-sm text-default-500">
+                                        İlk değerlendirmeyi siz yapın ve diğer
+                                        müşterilere yardımcı olun!
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                {reviews.map((review, index) => (
+                                    <div
+                                        key={review.id}
+                                        className="bg-default-50 rounded-xl p-6 border border-default-200"
+                                    >
+                                        <div className="flex items-start gap-4">
+                                            <Avatar
+                                                size="md"
+                                                className="flex-shrink-0 bg-primary text-white"
+                                                name={`User ${review.user_id}`}
+                                            />
+
+                                            <div className="flex-1 space-y-3">
+                                                <div className="flex items-start justify-between">
+                                                    <div className="space-y-2">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex gap-0.5">
+                                                                {renderStars(
+                                                                    review.rating
+                                                                )}
+                                                            </div>
+                                                            <Chip
+                                                                size="sm"
+                                                                variant="flat"
+                                                                color={
+                                                                    review.rating >=
+                                                                    4
+                                                                        ? 'success'
+                                                                        : review.rating >=
+                                                                            3
+                                                                          ? 'warning'
+                                                                          : 'danger'
+                                                                }
+                                                                className="font-medium"
+                                                            >
+                                                                {review.rating}
+                                                                /5
+                                                            </Chip>
+                                                        </div>
+                                                        <p className="text-xs text-default-500 font-medium">
+                                                            {formatDate(
+                                                                review.created_at
+                                                            )}
+                                                        </p>
                                                     </div>
-                                                    <Chip
-                                                        size="sm"
-                                                        variant="flat"
-                                                        color={
-                                                            review.rating >= 4
-                                                                ? 'success'
-                                                                : review.rating >=
-                                                                    3
-                                                                  ? 'warning'
-                                                                  : 'danger'
-                                                        }
-                                                        className="font-medium"
-                                                    >
-                                                        {review.rating}/5
-                                                    </Chip>
                                                 </div>
-                                                <p className="text-xs text-default-500 font-medium">
-                                                    {formatDate(
-                                                        review.created_at
-                                                    )}
+
+                                                <p className="text-default-700 leading-relaxed text-sm">
+                                                    {review.comment}
                                                 </p>
                                             </div>
                                         </div>
-
-                                        <p className="text-default-700 leading-relaxed text-sm">
-                                            {review.comment}
-                                        </p>
                                     </div>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                )}
+                        )}
 
-                {pagination && pagination.totalPages > 1 && (
-                    <div className="flex justify-center pt-4">
-                        <Pagination
-                            page={currentPage + 1}
-                            total={pagination.totalPages}
-                            onChange={page => setCurrentPage(page - 1)}
-                            showControls
-                            showShadow
-                            color="primary"
-                            size="lg"
-                        />
+                        {pagination && pagination.totalPages > 1 && (
+                            <div className="flex justify-center pt-4">
+                                <Pagination
+                                    page={currentPage + 1}
+                                    total={pagination.totalPages}
+                                    onChange={page => setCurrentPage(page - 1)}
+                                    showControls
+                                    showShadow
+                                    color="primary"
+                                    size="lg"
+                                    classNames={{
+                                        item: 'cursor-pointer',
+                                        next: 'cursor-pointer',
+                                        prev: 'cursor-pointer',
+                                    }}
+                                />
+                            </div>
+                        )}
                     </div>
-                )}
-            </div>
+                </>
+            )}
 
             {/* Write Review Button */}
             <div className="bg-primary-50 border border-primary-200 rounded-2xl p-6 text-center space-y-4">
