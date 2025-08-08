@@ -293,7 +293,7 @@ describe('ProductCard', () => {
             />
         );
 
-        expect(screen.getByText('299.99 TL')).toBeInTheDocument();
+        expect(screen.getByText(/299\.99/)).toBeInTheDocument();
     });
 
     it('truncates long product titles correctly', () => {

@@ -4,14 +4,19 @@ import { IoCartOutline } from 'react-icons/io5';
 interface ProductActionsProps {
     onAddToCart: () => void;
     isLoading?: boolean;
+    'data-testid'?: string;
 }
 
 function ProductActions({
     onAddToCart,
     isLoading = false,
+    'data-testid': dataTestId,
 }: ProductActionsProps) {
     return (
-        <div className="flex gap-2 mt-4 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div
+            className="flex gap-2 mt-4 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            data-testid={dataTestId}
+        >
             <Button
                 color="primary"
                 className="flex-1 text-sm font-medium"
@@ -19,6 +24,7 @@ function ProductActions({
                 onPress={onAddToCart}
                 isLoading={isLoading}
                 size="sm"
+                data-testid="add-to-cart-btn"
             >
                 Sepete Ekle
             </Button>

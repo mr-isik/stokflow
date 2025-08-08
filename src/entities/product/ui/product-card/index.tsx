@@ -49,10 +49,12 @@ export function ProductCard({
     return (
         <Card
             className={`group hover:shadow-lg transition-all duration-300 shadow-none border border-foreground-200 ${className}`}
+            data-testid={`product-card-${product.id}`}
         >
             <CardBody
                 className="p-0 cursor-pointer"
                 onClick={handleProductClick}
+                data-testid={`product-click-${product.id}`}
             >
                 {/* Image Section */}
                 <div className="relative overflow-hidden">
@@ -78,6 +80,7 @@ export function ProductCard({
                     <ProductActions
                         onAddToCart={handleAddToCart}
                         isLoading={isLoading}
+                        data-testid={`add-to-cart-${product.id}`}
                     />
                 )}
             </CardFooter>
