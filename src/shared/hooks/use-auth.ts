@@ -17,38 +17,15 @@ export const AUTH_QUERY_KEYS = {
     all: ['auth'] as const,
 } as const;
 
-const getStoredToken = (): string | null => {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('auth_token');
-};
-
-const setStoredAuth = (user: CurrentUserData['user'], token: string) => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('auth_user', JSON.stringify(user));
-};
-
-const clearStoredAuth = () => {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-};
-
 export const useCurrentUser = () => {
     return useAppQuery({
         queryKey: [...AUTH_QUERY_KEYS.me],
         queryFn: async () => {
-            const token = getStoredToken();
-            if (!token) {
-                throw new Error('No token found');
-            }
             return await AuthAPI.getCurrentUser();
         },
-        enabled: !!getStoredToken(),
         staleTime: 1000 * 60 * 5,
         retry: (failureCount: number, error: AppError) => {
             if (error.status === 401) {
-                clearStoredAuth();
                 return false;
             }
             return failureCount < 2;
@@ -65,8 +42,6 @@ export const useLogin = () => {
         },
         {
             onSuccess: (response: LoginResponseData) => {
-                setStoredAuth(response.user, response.session.access_token);
-
                 queryClient.setQueryData(AUTH_QUERY_KEYS.me, response.user);
 
                 queryClient.invalidateQueries({
@@ -75,7 +50,6 @@ export const useLogin = () => {
             },
             onError: (error: AppError) => {
                 console.error('Login failed:', error);
-                clearStoredAuth();
                 queryClient.removeQueries({ queryKey: AUTH_QUERY_KEYS.me });
             },
         }
@@ -92,13 +66,10 @@ export const useLogout = () => {
         },
         {
             onSuccess: () => {
-                clearStoredAuth();
-
                 queryClient.clear();
             },
             onError: (error: AppError) => {
                 console.error('Logout failed:', error);
-                clearStoredAuth();
                 queryClient.clear();
                 router.push('/login');
             },
@@ -119,8 +90,6 @@ export const useSignup = () => {
         },
         {
             onSuccess: (response: CurrentUserData) => {
-                setStoredAuth(response.user, response.access_token);
-
                 queryClient.setQueryData(AUTH_QUERY_KEYS.me, response.user);
 
                 queryClient.invalidateQueries({
@@ -129,7 +98,6 @@ export const useSignup = () => {
             },
             onError: (error: AppError) => {
                 console.error('Signup failed:', error);
-                clearStoredAuth();
                 queryClient.removeQueries({ queryKey: AUTH_QUERY_KEYS.me });
             },
         }
@@ -139,13 +107,11 @@ export const useSignup = () => {
 export const useAuth = () => {
     const queryClient = useQueryClient();
     const { data: user, isLoading, error } = useCurrentUser();
-    const token = getStoredToken();
 
     const logout = useLogout();
 
     React.useEffect(() => {
         const handleUnauthorized = () => {
-            clearStoredAuth();
             queryClient.clear();
         };
 
@@ -156,14 +122,12 @@ export const useAuth = () => {
     }, [queryClient]);
 
     if (error && (error as AppError)?.status === 401) {
-        clearStoredAuth();
         queryClient.clear();
     }
 
     return {
         user: user?.user || null,
-        token,
-        isAuthenticated: !!user && !!token,
+        isAuthenticated: !!user,
         isLoading,
         logout: logout.mutate,
         isLoggingOut: logout.isPending,

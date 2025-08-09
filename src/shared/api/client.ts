@@ -10,7 +10,6 @@ import { validateApiResponse, ValidationError } from '@/shared/lib/validation';
 import {
     ApiConfig,
     ApiRequestConfig,
-    ApiResponse,
     ApiError,
     RequestLog,
     ResponseLog,
@@ -32,7 +31,6 @@ const generateRequestId = () => Math.random().toString(36).substring(2, 15);
 export const axiosInstance: AxiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     timeout: defaultApiConfig.timeout,
-    withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -81,7 +79,6 @@ const retryRequest = async (error: AxiosError): Promise<AxiosResponse> => {
     const config = error.config as any;
     config.retryCount = (config.retryCount || 0) + 1;
 
-    // Wait before retrying
     await new Promise(resolve =>
         setTimeout(resolve, defaultApiConfig.retryDelay * config.retryCount)
     );
@@ -94,40 +91,14 @@ const retryRequest = async (error: AxiosError): Promise<AxiosResponse> => {
     return axiosInstance.request(config);
 };
 
-// Request interceptor with logging and validation
 axiosInstance.interceptors.request.use(
     (config: any) => {
         const requestId = generateRequestId();
         config.requestId = requestId;
         config.startTime = Date.now();
 
-        // Token'ı localStorage'dan al
-        if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('auth_token');
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            }
-        }
-
         // Log request if enabled
         if (defaultApiConfig.enableLogging) {
-            // User ID'yi localStorage'dan al
-            let userId = 'anonymous';
-            if (typeof window !== 'undefined') {
-                const savedUser = localStorage.getItem('auth_user');
-                if (savedUser) {
-                    try {
-                        const user = JSON.parse(savedUser);
-                        userId = user.id || 'anonymous';
-                    } catch (error) {
-                        console.warn(
-                            'Failed to parse user from localStorage:',
-                            error
-                        );
-                    }
-                }
-            }
-
             const requestLog: RequestLog = {
                 id: requestId,
                 method: (config.method?.toUpperCase() as any) || 'GET',
@@ -135,7 +106,6 @@ axiosInstance.interceptors.request.use(
                 headers: config.headers as Record<string, string>,
                 data: config.data,
                 timestamp: new Date(),
-                userId,
             };
 
             logger.debug('API Request', requestLog);
@@ -174,15 +144,6 @@ axiosInstance.interceptors.response.use(
     async (error: AxiosError) => {
         const config = error.config as any;
         const duration = config?.startTime ? Date.now() - config.startTime : 0;
-
-        if (error.response?.status === 401) {
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('auth_user');
-
-                window.dispatchEvent(new CustomEvent('auth:unauthorized'));
-            }
-        }
 
         if (defaultApiConfig.enableLogging) {
             const responseLog: ResponseLog = {

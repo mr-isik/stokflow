@@ -9,7 +9,6 @@ export interface AppError {
     status?: number;
 }
 
-// Yaygın hata kodları ve mesajları
 export const ERROR_MESSAGES = {
     invalid_credentials: 'E-posta veya şifre hatalı',
     user_already_registered: 'Bu e-posta adresi zaten kayıtlı',

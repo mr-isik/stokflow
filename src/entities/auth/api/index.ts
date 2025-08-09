@@ -33,11 +33,6 @@ export const AuthAPI = {
 
     async logout(): Promise<void> {
         await apiClient.post('/auth/logout');
-
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('auth_user');
-        }
     },
 
     async getCurrentUser(): Promise<CurrentUserData | null> {
@@ -49,10 +44,6 @@ export const AuthAPI = {
             );
             return response;
         } catch (error) {
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('auth_user');
-            }
             return null;
         }
     },
