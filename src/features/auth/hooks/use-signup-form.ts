@@ -1,13 +1,7 @@
-import { signupSchema } from '@/entities/auth/model';
+import { SignupFormData, signupSchema } from '@/entities/auth/model';
 import { useLogin, useSignup } from '@/shared/hooks/use-auth';
 import { useFormHandler } from '@/shared/hooks/use-form-handler';
 import { useRouter } from 'next/navigation';
-
-interface SignupFormData {
-    email: string;
-    password: string;
-    name: string;
-}
 
 export const useSignupForm = (
     setError: (message: string) => void,

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import ProductPrice from '../ui/product-card/product-price';
-import { render } from './test-utilities.test';
+import { render } from './test-utilities';
 
 describe('ProductPrice', () => {
     it('displays price correctly', () => {

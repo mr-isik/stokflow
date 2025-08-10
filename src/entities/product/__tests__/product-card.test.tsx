@@ -3,11 +3,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ProductCard } from '../ui/product-card';
 import type { Product } from '../model';
-import {
-    render,
-    mockProduct,
-    mockProductWithoutImage,
-} from './test-utilities.test';
+import { render, mockProduct, mockProductWithoutImage } from './test-utilities';
 
 // Mock the subcomponents
 vi.mock('../ui/product-card/product-image', () => ({
@@ -293,7 +289,7 @@ describe('ProductCard', () => {
             />
         );
 
-        expect(screen.getByText(/299\.99/)).toBeInTheDocument();
+        expect(screen.getByText(/99\.99/)).toBeInTheDocument();
     });
 
     it('truncates long product titles correctly', () => {

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { ProductCardSkeleton, ProductsSkeleton } from '../ui/product-skeleton';
-import { render } from './test-utilities.test';
+import { render } from './test-utilities';
 
 describe('Product Skeleton Components', () => {
     describe('ProductCardSkeleton', () => {

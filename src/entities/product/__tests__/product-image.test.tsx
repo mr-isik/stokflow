@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import ProductImage from '../ui/product-card/product-image';
-import { render } from './test-utilities.test';
+import { render } from './test-utilities';
 
 describe('ProductImage', () => {
     const mockImage = {

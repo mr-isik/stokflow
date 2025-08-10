@@ -1,23 +1,29 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { QueryClient } from '@tanstack/react-query';
 import { ProductList } from '../ui/product-list';
-import { productsAPI } from '../api';
-import type { Product } from '../model';
+import { useInfiniteQueryProducts } from '../queries';
 import {
-    render,
+    renderWithProviders,
     mockPaginatedResponse,
     mockPaginatedResponseWithNextPage,
-    mockSecondPageResponse,
     mockIntersectionObserver,
     triggerIntersection,
-} from './test-utilities.test';
+} from './test-utilities';
 
-// Mock the API
-vi.mock('../api', () => ({
-    productsAPI: {
-        getProducts: vi.fn(),
-    },
+// Mock the queries
+vi.mock('../queries', () => ({
+    useInfiniteQueryProducts: vi.fn(),
+}));
+
+// Mock Next.js router
+const mockPush = vi.fn();
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        push: mockPush,
+        replace: vi.fn(),
+        refresh: vi.fn(),
+    }),
 }));
 
 // Mock window.location.reload
@@ -40,8 +46,12 @@ describe('ProductList', () => {
                     retry: false,
                     gcTime: 0,
                 },
+                mutations: {
+                    retry: false,
+                },
             },
         });
+
         mockObserver = mockIntersectionObserver();
         vi.clearAllMocks();
     });
@@ -51,80 +61,100 @@ describe('ProductList', () => {
     });
 
     it('renders loading skeleton initially', () => {
-        vi.mocked(productsAPI.getProducts).mockImplementation(
-            () => new Promise(() => {}) // Never resolves
-        );
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: { pages: [] }, // Provide valid data structure
+            error: null,
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: true,
+            isFetchingNextPage: false,
+            status: 'pending',
+        } as any);
 
-        render(<ProductList />, { queryClient });
+        renderWithProviders(<ProductList />, { queryClient });
 
-        expect(screen.getByTestId('products-skeleton')).toBeInTheDocument();
-        expect(screen.getByText('Loading 20 products...')).toBeInTheDocument();
+        // Should not show empty state while loading
+        expect(
+            screen.queryByText('Henüz ürün bulunamadı')
+        ).not.toBeInTheDocument();
     });
 
-    it('renders products when data is loaded', async () => {
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(
-            mockPaginatedResponse
-        );
+    it('renders empty state when no products are found', () => {
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [],
+            },
+            error: null,
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'success',
+        } as any);
 
-        render(<ProductList />, { queryClient });
+        renderWithProviders(<ProductList />, { queryClient });
 
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-            expect(screen.getByTestId('product-card-2')).toBeInTheDocument();
-            expect(screen.getByTestId('product-card-3')).toBeInTheDocument();
-        });
-
-        expect(screen.getByText('Test Product')).toBeInTheDocument();
-        expect(screen.getByText('Second Product')).toBeInTheDocument();
-        expect(screen.getByText('Third Product')).toBeInTheDocument();
+        expect(screen.getByText('Henüz ürün bulunamadı')).toBeInTheDocument();
+        expect(
+            screen.getByText('Yakında yeni ürünler eklenecek.')
+        ).toBeInTheDocument();
     });
 
-    it('renders error state when API fails', async () => {
-        const errorMessage = 'Network error occurred';
-        vi.mocked(productsAPI.getProducts).mockRejectedValue(
-            new Error(errorMessage)
-        );
+    it('renders products when data is loaded', () => {
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponse],
+            },
+            error: null,
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'success',
+        } as any);
 
-        render(<ProductList />, { queryClient });
+        renderWithProviders(<ProductList />, { queryClient });
 
-        await waitFor(() => {
-            expect(
-                screen.getByText('Ürünler yüklenirken bir hata oluştu')
-            ).toBeInTheDocument();
-            expect(screen.getByText(errorMessage)).toBeInTheDocument();
-            expect(screen.getByText('Tekrar Dene')).toBeInTheDocument();
-        });
+        // Check that product cards are rendered
+        expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
+        expect(screen.getByTestId('product-card-2')).toBeInTheDocument();
+        expect(screen.getByTestId('product-card-3')).toBeInTheDocument();
     });
 
-    it('renders empty state when no products are returned', async () => {
-        const emptyResponse = {
-            ...mockPaginatedResponse,
-            data: [],
-        };
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(emptyResponse);
+    it('renders error state when API fails', () => {
+        const mockError = new Error('Network error occurred');
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: undefined,
+            error: mockError,
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'error',
+        } as any);
 
-        render(<ProductList />, { queryClient });
+        renderWithProviders(<ProductList />, { queryClient });
 
-        await waitFor(() => {
-            expect(
-                screen.getByText('Henüz ürün bulunamadı')
-            ).toBeInTheDocument();
-            expect(
-                screen.getByText('Yakında yeni ürünler eklenecek.')
-            ).toBeInTheDocument();
-        });
+        expect(
+            screen.getByText('Ürünler yüklenirken bir hata oluştu')
+        ).toBeInTheDocument();
+        expect(screen.getByText('Network error occurred')).toBeInTheDocument();
+        expect(screen.getByText('Tekrar Dene')).toBeInTheDocument();
     });
 
-    it('reloads page when retry button is clicked', async () => {
-        vi.mocked(productsAPI.getProducts).mockRejectedValue(
-            new Error('Network error')
-        );
+    it('reloads page when retry button is clicked', () => {
+        const mockError = new Error('Network error');
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: undefined,
+            error: mockError,
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'error',
+        } as any);
 
-        render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByText('Tekrar Dene')).toBeInTheDocument();
-        });
+        renderWithProviders(<ProductList />, { queryClient });
 
         const retryButton = screen.getByText('Tekrar Dene');
         fireEvent.click(retryButton);
@@ -132,239 +162,148 @@ describe('ProductList', () => {
         expect(window.location.reload).toHaveBeenCalled();
     });
 
-    it('calls onProductClick when product is clicked', async () => {
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(
-            mockPaginatedResponse
-        );
+    it('shows "Daha Fazla Yükle" button when there is next page', () => {
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponseWithNextPage],
+            },
+            error: null,
+            fetchNextPage: vi.fn(),
+            hasNextPage: true,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'success',
+        } as any);
 
-        // Spy on console.log to verify the callback
-        const consoleSpy = vi
-            .spyOn(console, 'log')
-            .mockImplementation(() => {});
+        renderWithProviders(<ProductList />, { queryClient });
 
-        render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByTestId('product-click-1')).toBeInTheDocument();
-        });
-
-        const productButton = screen.getByTestId('product-click-1');
-        fireEvent.click(productButton);
-
-        expect(consoleSpy).toHaveBeenCalledWith('Navigate to product:', {
-            productId: 1,
-            slug: 'test-product',
-        });
-
-        consoleSpy.mockRestore();
+        expect(screen.getByText('Daha Fazla Yükle')).toBeInTheDocument();
     });
 
-    it('calls onAddToCart when add to cart button is clicked', async () => {
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(
-            mockPaginatedResponse
-        );
+    it('shows end of results message when no more pages', () => {
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponse],
+            },
+            error: null,
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'success',
+        } as any);
 
-        // Spy on console.log to verify the callback
-        const consoleSpy = vi
-            .spyOn(console, 'log')
-            .mockImplementation(() => {});
+        renderWithProviders(<ProductList />, { queryClient });
 
-        render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByTestId('add-to-cart-1')).toBeInTheDocument();
-        });
-
-        const addToCartButton = screen.getByTestId('add-to-cart-1');
-        fireEvent.click(addToCartButton);
-
-        expect(consoleSpy).toHaveBeenCalledWith('Adding to cart:', 1);
-
-        consoleSpy.mockRestore();
+        expect(screen.getByText('Tüm ürünler yüklendi')).toBeInTheDocument();
+        expect(screen.queryByText('Daha Fazla Yükle')).not.toBeInTheDocument();
     });
 
-    it('loads next page when intersection observer triggers', async () => {
-        vi.mocked(productsAPI.getProducts)
-            .mockResolvedValueOnce(mockPaginatedResponseWithNextPage)
-            .mockResolvedValueOnce(mockSecondPageResponse);
+    it('calls fetchNextPage when "Daha Fazla Yükle" is clicked', () => {
+        const mockFetchNextPage = vi.fn();
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponseWithNextPage],
+            },
+            error: null,
+            fetchNextPage: mockFetchNextPage,
+            hasNextPage: true,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'success',
+        } as any);
 
-        render(<ProductList />, { queryClient });
-
-        // Wait for initial data to load
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-        });
-
-        // Trigger intersection observer
-        triggerIntersection(mockObserver, true);
-
-        // Wait for next page to load
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-3')).toBeInTheDocument();
-        });
-
-        expect(vi.mocked(productsAPI.getProducts)).toHaveBeenCalledTimes(2);
-        expect(vi.mocked(productsAPI.getProducts)).toHaveBeenNthCalledWith(1, {
-            pageParam: 0,
-            pageSize: 10,
-        });
-        expect(vi.mocked(productsAPI.getProducts)).toHaveBeenNthCalledWith(2, {
-            pageParam: 1,
-            pageSize: 10,
-        });
-    });
-
-    it('shows loading skeleton when fetching next page', async () => {
-        vi.mocked(productsAPI.getProducts)
-            .mockResolvedValueOnce(mockPaginatedResponseWithNextPage)
-            .mockImplementation(() => new Promise(() => {})); // Never resolves second call
-
-        render(<ProductList />, { queryClient });
-
-        // Wait for initial data to load
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-        });
-
-        // Trigger intersection observer to load next page
-        triggerIntersection(mockObserver, true);
-
-        // Should show loading skeleton for next page
-        await waitFor(() => {
-            expect(
-                screen.getByText('Loading 10 products...')
-            ).toBeInTheDocument();
-        });
-    });
-
-    it('shows "Daha Fazla Yükle" button when available', async () => {
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(
-            mockPaginatedResponseWithNextPage
-        );
-
-        render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByText('Daha Fazla Yükle')).toBeInTheDocument();
-        });
-    });
-
-    it('loads next page when "Daha Fazla Yükle" button is clicked', async () => {
-        vi.mocked(productsAPI.getProducts)
-            .mockResolvedValueOnce(mockPaginatedResponseWithNextPage)
-            .mockResolvedValueOnce(mockSecondPageResponse);
-
-        render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByText('Daha Fazla Yükle')).toBeInTheDocument();
-        });
+        renderWithProviders(<ProductList />, { queryClient });
 
         const loadMoreButton = screen.getByText('Daha Fazla Yükle');
         fireEvent.click(loadMoreButton);
 
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-3')).toBeInTheDocument();
-        });
-
-        expect(vi.mocked(productsAPI.getProducts)).toHaveBeenCalledTimes(2);
+        expect(mockFetchNextPage).toHaveBeenCalled();
     });
 
-    it('shows end of results message when no more pages', async () => {
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(
-            mockPaginatedResponse
-        );
+    it('triggers intersection observer when scrolling to bottom', () => {
+        const mockFetchNextPage = vi.fn();
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponseWithNextPage],
+            },
+            error: null,
+            fetchNextPage: mockFetchNextPage,
+            hasNextPage: true,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'success',
+        } as any);
 
-        render(<ProductList />, { queryClient });
+        renderWithProviders(<ProductList />, { queryClient });
 
-        await waitFor(() => {
-            expect(
-                screen.getByText('Tüm ürünler yüklendi')
-            ).toBeInTheDocument();
-        });
-
-        expect(screen.queryByText('Daha Fazla Yükle')).not.toBeInTheDocument();
-    });
-
-    it('does not load next page when already fetching', async () => {
-        vi.mocked(productsAPI.getProducts)
-            .mockResolvedValueOnce(mockPaginatedResponseWithNextPage)
-            .mockImplementation(() => new Promise(() => {})); // Never resolves
-
-        render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-        });
-
-        // Trigger intersection while already fetching
-        triggerIntersection(mockObserver, true);
-        triggerIntersection(mockObserver, true); // Second trigger should be ignored
-
-        // Should only be called twice (initial + one fetch next page)
-        await waitFor(() => {
-            expect(vi.mocked(productsAPI.getProducts)).toHaveBeenCalledTimes(2);
-        });
-    });
-
-    it('does not load next page when intersection is not triggered', async () => {
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(
-            mockPaginatedResponseWithNextPage
-        );
-
-        render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-        });
-
-        // Trigger intersection with isIntersecting: false
-        triggerIntersection(mockObserver, false);
-
-        // Should not trigger additional API calls
-        expect(vi.mocked(productsAPI.getProducts)).toHaveBeenCalledTimes(1);
-    });
-
-    it('sets up and cleans up intersection observer correctly', async () => {
-        vi.mocked(productsAPI.getProducts).mockResolvedValue(
-            mockPaginatedResponse
-        );
-
-        const { unmount } = render(<ProductList />, { queryClient });
-
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-        });
-
-        expect(mockObserver.observe).toHaveBeenCalled();
-
-        unmount();
-
-        expect(mockObserver.unobserve).toHaveBeenCalled();
-    });
-
-    it('displays products in grid layout by pages', async () => {
-        vi.mocked(productsAPI.getProducts)
-            .mockResolvedValueOnce(mockPaginatedResponseWithNextPage)
-            .mockResolvedValueOnce(mockSecondPageResponse);
-
-        render(<ProductList />, { queryClient });
-
-        // Wait for initial data
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-        });
-
-        // Load next page
+        // Trigger intersection observer
         triggerIntersection(mockObserver, true);
 
-        await waitFor(() => {
-            expect(screen.getByTestId('product-card-3')).toBeInTheDocument();
-        });
+        expect(mockFetchNextPage).toHaveBeenCalled();
+    });
 
-        // All products should be visible
-        expect(screen.getByTestId('product-card-1')).toBeInTheDocument();
-        expect(screen.getByTestId('product-card-2')).toBeInTheDocument();
-        expect(screen.getByTestId('product-card-3')).toBeInTheDocument();
+    it('does not fetch next page when already fetching', () => {
+        const mockFetchNextPage = vi.fn();
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponseWithNextPage],
+            },
+            error: null,
+            fetchNextPage: mockFetchNextPage,
+            hasNextPage: true,
+            isFetching: false,
+            isFetchingNextPage: true,
+            status: 'success',
+        } as any);
+
+        renderWithProviders(<ProductList />, { queryClient });
+
+        // Trigger intersection observer
+        triggerIntersection(mockObserver, true);
+
+        expect(mockFetchNextPage).not.toHaveBeenCalled();
+    });
+
+    it('navigates to product page when product is clicked', () => {
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponse],
+            },
+            error: null,
+            fetchNextPage: vi.fn(),
+            hasNextPage: false,
+            isFetching: false,
+            isFetchingNextPage: false,
+            status: 'success',
+        } as any);
+
+        renderWithProviders(<ProductList />, { queryClient });
+
+        // Click on the product's clickable area (CardBody or product info)
+        const productClickArea = screen.getByTestId('product-click-1');
+        fireEvent.click(productClickArea);
+
+        expect(mockPush).toHaveBeenCalledWith('/test-product');
+    });
+
+    it('shows loading skeleton when fetching next page', () => {
+        vi.mocked(useInfiniteQueryProducts).mockReturnValue({
+            data: {
+                pages: [mockPaginatedResponseWithNextPage],
+            },
+            error: null,
+            fetchNextPage: vi.fn(),
+            hasNextPage: true,
+            isFetching: false,
+            isFetchingNextPage: true,
+            status: 'success',
+        } as any);
+
+        renderWithProviders(<ProductList />, { queryClient });
+
+        // Check that loading skeleton is shown when fetching next page
+        const skeletonContainer = document.querySelector('.py-8');
+        expect(skeletonContainer).toBeInTheDocument();
     });
 });

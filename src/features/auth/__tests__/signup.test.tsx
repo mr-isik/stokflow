@@ -19,6 +19,7 @@ import {
     CSS_CLASSES,
     PASSWORD_REQUIREMENTS,
 } from './test-constants';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Sadece AuthAPI'yi mock et, form validasyonu ve davranışlarını  bırak
 vi.mock('@/entities/auth/api', () => ({
@@ -33,9 +34,24 @@ vi.mock('react-icons/io5', () => ({
     IoEyeOff: () => <span data-testid={TEST_LABELS.EYE_OFF_ICON}>👁️‍🗨️</span>,
 }));
 
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-    <HeroUIProvider>{children}</HeroUIProvider>
-);
+const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                retry: false,
+            },
+            mutations: {
+                retry: false,
+            },
+        },
+    });
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <HeroUIProvider>{children}</HeroUIProvider>
+        </QueryClientProvider>
+    );
+};
 
 describe('SignupForm - Validasyon Testleri 🧪', () => {
     const mockOnSuccess = vi.fn();
@@ -472,6 +488,7 @@ describe('SignupForm - Validasyon Testleri 🧪', () => {
                     name: TEST_DATA.VALID_NAME,
                     email: TEST_DATA.VALID_EMAIL,
                     password: TEST_DATA.VALID_PASSWORD,
+                    confirmPassword: TEST_DATA.VALID_PASSWORD,
                 });
             });
 
@@ -515,6 +532,7 @@ describe('SignupForm - Validasyon Testleri 🧪', () => {
                     name: TEST_DATA.VALID_NAME,
                     email: TEST_DATA.VALID_EMAIL,
                     password: TEST_DATA.VALID_PASSWORD,
+                    confirmPassword: TEST_DATA.VALID_PASSWORD,
                 });
             });
 
@@ -774,6 +792,7 @@ describe('SignupForm - Validasyon Testleri 🧪', () => {
                     name: TEST_DATA.TURKISH_NAME,
                     email: TEST_DATA.VALID_EMAIL,
                     password: TEST_DATA.VALID_PASSWORD,
+                    confirmPassword: TEST_DATA.VALID_PASSWORD,
                 });
             });
         });

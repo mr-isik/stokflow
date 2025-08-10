@@ -13,10 +13,7 @@ function ProductActions({
     'data-testid': dataTestId,
 }: ProductActionsProps) {
     return (
-        <div
-            className="flex gap-2 mt-4 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            data-testid={dataTestId}
-        >
+        <div className="flex gap-2 mt-4 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <Button
                 color="primary"
                 className="flex-1 text-sm font-medium"
@@ -24,7 +21,7 @@ function ProductActions({
                 onPress={onAddToCart}
                 isLoading={isLoading}
                 size="sm"
-                data-testid="add-to-cart-btn"
+                data-testid={dataTestId}
             >
                 Sepete Ekle
             </Button>

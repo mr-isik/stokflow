@@ -10,6 +10,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LoginForm } from '../ui/login-form';
 import { HeroUIProvider } from '@heroui/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import {
     TEST_LABELS,
@@ -32,9 +33,24 @@ vi.mock('react-icons/io5', () => ({
     IoEyeOff: () => <span data-testid={TEST_LABELS.EYE_OFF_ICON}>👁️‍🗨️</span>,
 }));
 
-const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-    <HeroUIProvider>{children}</HeroUIProvider>
-);
+const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                retry: false,
+            },
+            mutations: {
+                retry: false,
+            },
+        },
+    });
+
+    return (
+        <QueryClientProvider client={queryClient}>
+            <HeroUIProvider>{children}</HeroUIProvider>
+        </QueryClientProvider>
+    );
+};
 
 describe('LoginForm - Validasyon Testleri 🧪', () => {
     const mockOnSuccess = vi.fn();

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ProductActions from '../ui/product-card/product-actions';
-import { render } from './test-utilities.test';
+import { render } from './test-utilities';
 
 describe('ProductActions', () => {
     const mockOnAddToCart = vi.fn();

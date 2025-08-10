@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const productImageSchema = z.object({
-    url: z.string().url(),
-    alt: z.string(),
+    url: z.url(),
+    alt: z.string().min(2).max(100),
     is_featured: z.boolean(),
 });
 
@@ -14,8 +14,8 @@ export const productVariantOptionSchema = z.object({
 
 export const productVariantSchema = z.object({
     id: z.number(),
-    price: z.number(),
-    stock: z.number(),
+    price: z.number().gt(0),
+    stock: z.number().gt(0),
     sku: z.string(),
     compare_at_price: z.number().optional(),
     product_variant_options: z.array(productVariantOptionSchema),
@@ -26,11 +26,13 @@ export const productSchema = z.object({
     title: z.string(),
     slug: z.string(),
     product_images: z.array(productImageSchema),
-    product_variants: z.array(
-        z.object({
-            price: z.number(),
-        })
-    ),
+    product_variants: z
+        .array(
+            z.object({
+                price: z.number().gt(0),
+            })
+        )
+        .nonempty(),
 });
 
 export const detailedProductSchema = productSchema.extend({

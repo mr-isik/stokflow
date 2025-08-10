@@ -59,7 +59,7 @@ describe('Product Model Schemas', () => {
             expect(result.success).toBe(false);
         });
 
-        it('accepts empty alt text', () => {
+        it('rejects empty alt text', () => {
             const imageWithEmptyAlt = {
                 url: 'https://example.com/image.jpg',
                 alt: '',

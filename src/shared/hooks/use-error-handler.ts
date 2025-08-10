@@ -6,7 +6,6 @@ import {
     useQuery,
     UseQueryOptions,
     useInfiniteQuery,
-    UseInfiniteQueryOptions,
 } from '@tanstack/react-query';
 import {
     normalizeError,
@@ -14,7 +13,6 @@ import {
     type AppError,
 } from '@/shared/lib/errors';
 
-// Mutation wrapper with error handling
 export function useAppMutation<TData = unknown, TVariables = void>(
     mutationFn: (variables: TVariables) => Promise<TData>,
     options?: Omit<
@@ -34,10 +32,8 @@ export function useAppMutation<TData = unknown, TVariables = void>(
         },
         ...options,
         onError: (error, variables, context) => {
-            // Log error for debugging
             console.error('Mutation failed:', error);
 
-            // Call user's onError if provided
             options?.onError?.(error, variables, context);
         },
     });
@@ -115,7 +111,6 @@ export function useFormMutation<TData = unknown, TVariables = unknown>(
     });
 }
 
-// Hook for handling API errors in components
 export function useErrorHandler() {
     const handleError = (
         error: unknown,

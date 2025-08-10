@@ -8,6 +8,7 @@ import { AuthAPI } from '@/entities/auth/api';
 import {
     CurrentUserData,
     LoginResponseData,
+    SignupFormData,
     type LoginFormData,
 } from '@/entities/auth/model';
 import { useRouter } from 'next/navigation';
@@ -81,11 +82,7 @@ export const useSignup = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(
-        async (data: {
-            email: string;
-            password: string;
-            name: string;
-        }): Promise<CurrentUserData> => {
+        async (data: SignupFormData): Promise<CurrentUserData> => {
             return await AuthAPI.signup(data);
         },
         {

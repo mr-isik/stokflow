@@ -6,6 +6,7 @@ import {
     LoginResponseData,
     loginResponseSchema,
     loginSchema,
+    SignupFormData,
 } from '../model';
 
 export interface AuthError {
@@ -22,12 +23,12 @@ export const AuthAPI = {
         return res;
     },
 
-    async signup(data: {
-        email: string;
-        password: string;
-        name: string;
-    }): Promise<CurrentUserData> {
-        const res = await apiClient.post('/auth/signup', data);
+    async signup(data: SignupFormData): Promise<CurrentUserData> {
+        const res = await apiClient.post('/auth/signup', {
+            email: data.email,
+            password: data.password,
+            name: data.name,
+        });
         return res;
     },
 
