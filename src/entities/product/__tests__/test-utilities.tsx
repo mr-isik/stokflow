@@ -23,6 +23,7 @@ export const mockProduct: Product = {
     ],
     product_variants: [
         {
+            id: 1,
             price: 99.99,
         },
     ],
@@ -35,6 +36,7 @@ export const mockProductWithoutImage: Product = {
     product_images: [],
     product_variants: [
         {
+            id: 1,
             price: 149.99,
         },
     ],
@@ -55,6 +57,7 @@ export const mockProducts: Product[] = [
         ],
         product_variants: [
             {
+                id: 2,
                 price: 199.99,
             },
         ],
@@ -72,6 +75,7 @@ export const mockProducts: Product[] = [
         ],
         product_variants: [
             {
+                id: 3,
                 price: 399.99,
             },
         ],

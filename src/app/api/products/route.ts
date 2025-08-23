@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         const { data, error } = await supabase
             .from('products')
             .select(
-                'id, title, slug, product_images(url, alt, is_featured), product_variants(price)'
+                'id, title, slug, product_images(url, alt, is_featured), product_variants(id, price)'
             )
             .range(offset, offset + limit - 1)
             .order('created_at', { ascending: false });

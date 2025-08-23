@@ -62,9 +62,12 @@ describe('useAppMutation', () => {
         const mockMutationFn = vi.fn().mockResolvedValue('success');
         const wrapper = createWrapper();
 
-        const { result } = renderHook(() => useAppMutation(mockMutationFn), {
-            wrapper,
-        });
+        const { result } = renderHook(
+            () => useAppMutation(mockMutationFn, ['test-data']),
+            {
+                wrapper,
+            }
+        );
 
         result.current.mutate('test-data');
 
@@ -81,9 +84,12 @@ describe('useAppMutation', () => {
         const mockMutationFn = vi.fn().mockRejectedValue(mockError);
         const wrapper = createWrapper();
 
-        const { result } = renderHook(() => useAppMutation(mockMutationFn), {
-            wrapper,
-        });
+        const { result } = renderHook(
+            () => useAppMutation(mockMutationFn, ['test-data']),
+            {
+                wrapper,
+            }
+        );
 
         result.current.mutate('test-data');
 
@@ -105,7 +111,10 @@ describe('useAppMutation', () => {
         const wrapper = createWrapper();
 
         const { result } = renderHook(
-            () => useAppMutation(mockMutationFn, { onError: mockOnError }),
+            () =>
+                useAppMutation(mockMutationFn, ['test-data'], {
+                    onError: mockOnError,
+                }),
             { wrapper }
         );
 
@@ -239,7 +248,7 @@ describe('useFormMutation', () => {
 
         const { result } = renderHook(
             () =>
-                useFormMutation(mockMutationFn, {
+                useFormMutation(mockMutationFn, ['test-data'], {
                     clearErrors: mockClearErrors,
                     onSuccess: mockOnSuccess,
                 }),
@@ -266,7 +275,7 @@ describe('useFormMutation', () => {
 
         const { result } = renderHook(
             () =>
-                useFormMutation(mockMutationFn, {
+                useFormMutation(mockMutationFn, ['test-data'], {
                     clearErrors: mockClearErrors,
                     setFieldError: mockSetFieldError,
                     setServerError: mockSetServerError,

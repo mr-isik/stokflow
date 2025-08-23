@@ -552,7 +552,7 @@ describe('Product Model Schemas', () => {
                 title: 'Test',
                 slug: 'test',
                 product_images: [],
-                product_variants: [{ price: 99.99 }],
+                product_variants: [{ id: 1, price: 99.99 }],
             };
 
             // Type check - this should compile without errors

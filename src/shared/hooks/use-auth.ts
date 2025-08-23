@@ -18,6 +18,12 @@ export const AUTH_QUERY_KEYS = {
     all: ['auth'] as const,
 } as const;
 
+export const AUTH_MUTATION_KEYS = {
+    login: ['auth', 'login'] as const,
+    logout: ['auth', 'logout'] as const,
+    signup: ['auth', 'signup'] as const,
+} as const;
+
 export const useCurrentUser = () => {
     return useAppQuery({
         queryKey: [...AUTH_QUERY_KEYS.me],
@@ -41,6 +47,7 @@ export const useLogin = () => {
         async (data: LoginFormData): Promise<LoginResponseData> => {
             return await AuthAPI.login(data);
         },
+        AUTH_MUTATION_KEYS.login,
         {
             onSuccess: (response: LoginResponseData) => {
                 queryClient.setQueryData(AUTH_QUERY_KEYS.me, response.user);
@@ -65,6 +72,7 @@ export const useLogout = () => {
         async () => {
             await AuthAPI.logout();
         },
+        AUTH_MUTATION_KEYS.logout,
         {
             onSuccess: () => {
                 queryClient.clear();
@@ -85,6 +93,7 @@ export const useSignup = () => {
         async (data: SignupFormData): Promise<CurrentUserData> => {
             return await AuthAPI.signup(data);
         },
+        AUTH_MUTATION_KEYS.signup,
         {
             onSuccess: (response: CurrentUserData) => {
                 queryClient.setQueryData(AUTH_QUERY_KEYS.me, response.user);

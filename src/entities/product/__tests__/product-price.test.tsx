@@ -5,7 +5,7 @@ import { render } from './test-utilities';
 
 describe('ProductPrice', () => {
     it('displays price correctly', () => {
-        const variants = [{ price: 99.99 }];
+        const variants = [{ id: 1, price: 99.99 }];
 
         render(<ProductPrice variants={variants} />);
 
@@ -13,7 +13,7 @@ describe('ProductPrice', () => {
     });
 
     it('displays zero price', () => {
-        const variants = [{ price: 0 }];
+        const variants = [{ id: 1, price: 0 }];
 
         render(<ProductPrice variants={variants} />);
 
@@ -21,7 +21,7 @@ describe('ProductPrice', () => {
     });
 
     it('displays large price numbers', () => {
-        const variants = [{ price: 999999.99 }];
+        const variants = [{ id: 1, price: 999999.99 }];
 
         render(<ProductPrice variants={variants} />);
 
@@ -30,9 +30,9 @@ describe('ProductPrice', () => {
 
     it('uses first variant when multiple variants exist', () => {
         const variants = [
-            { price: 99.99 },
-            { price: 149.99 },
-            { price: 199.99 },
+            { id: 1, price: 99.99 },
+            { id: 2, price: 149.99 },
+            { id: 3, price: 199.99 },
         ];
 
         render(<ProductPrice variants={variants} />);
@@ -42,7 +42,7 @@ describe('ProductPrice', () => {
     });
 
     it('applies correct styling classes', () => {
-        const variants = [{ price: 99.99 }];
+        const variants = [{ id: 1, price: 99.99 }];
 
         render(<ProductPrice variants={variants} />);
 
@@ -51,7 +51,7 @@ describe('ProductPrice', () => {
     });
 
     it('handles decimal prices correctly', () => {
-        const variants = [{ price: 29.5 }];
+        const variants = [{ id: 1, price: 29.5 }];
 
         render(<ProductPrice variants={variants} />);
 

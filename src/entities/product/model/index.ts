@@ -15,7 +15,7 @@ export const productVariantOptionSchema = z.object({
 export const productVariantSchema = z.object({
     id: z.number(),
     price: z.number().gt(0),
-    stock: z.number().gt(0),
+    stock: z.number().min(0),
     sku: z.string(),
     compare_at_price: z.number().optional(),
     product_variant_options: z.array(productVariantOptionSchema),
@@ -29,6 +29,7 @@ export const productSchema = z.object({
     product_variants: z
         .array(
             z.object({
+                id: z.number(),
                 price: z.number().gt(0),
             })
         )

@@ -6,6 +6,7 @@ import {
     useQuery,
     UseQueryOptions,
     useInfiniteQuery,
+    MutationKey,
 } from '@tanstack/react-query';
 import {
     normalizeError,
@@ -15,12 +16,14 @@ import {
 
 export function useAppMutation<TData = unknown, TVariables = void>(
     mutationFn: (variables: TVariables) => Promise<TData>,
+    mutationKey: MutationKey,
     options?: Omit<
         UseMutationOptions<TData, AppError, TVariables>,
         'mutationFn'
     >
 ) {
     return useMutation<TData, AppError, TVariables>({
+        mutationKey,
         mutationFn: async (variables: TVariables) => {
             try {
                 return await mutationFn(variables);
@@ -77,6 +80,7 @@ export function useAppInfiniteQuery<TData = unknown, TPageParam = unknown>(
 // Form mutation hook with built-in error handling
 export function useFormMutation<TData = unknown, TVariables = unknown>(
     mutationFn: (variables: TVariables) => Promise<TData>,
+    mutationKey: MutationKey,
     options?: {
         onSuccess?: (data: TData, variables: TVariables) => void;
         onError?: (error: AppError, variables: TVariables) => void;
@@ -85,7 +89,7 @@ export function useFormMutation<TData = unknown, TVariables = unknown>(
         clearErrors?: () => void;
     }
 ) {
-    return useAppMutation(mutationFn, {
+    return useAppMutation(mutationFn, mutationKey, {
         onSuccess: (data, variables) => {
             options?.clearErrors?.();
             options?.onSuccess?.(data, variables);

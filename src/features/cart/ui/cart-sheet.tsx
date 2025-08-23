@@ -15,20 +15,33 @@ import {
 } from '@heroui/react';
 import { ShoppingCartBoldIcon, DeleteIcon } from '@heroui/shared-icons';
 import { useState } from 'react';
-import { CartItem } from './types';
-import { MOCK_CART_ITEMS } from './mock-data';
+import { CartItem } from '@/widgets/header/types';
+import { MOCK_CART_ITEMS } from '@/widgets/header/mock-data';
+import { useCart } from '../hooks/queries';
 
 interface CartDropdownProps {
     className?: string;
 }
 
 export const CartDropdown = ({ className }: CartDropdownProps) => {
-    const [cartItems, setCartItems] = useState<CartItem[]>(MOCK_CART_ITEMS);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
+    const { cart, isError, isLoading } = useCart();
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isError) {
+        return <div>Error loading cart</div>;
+    }
+
+    if (!cart) {
+        return null;
+    }
+
+    const totalPrice = cart.items.reduce(
+        (sum, item) => sum + item.unit_price * item.quantity,
         0
     );
 
@@ -39,21 +52,10 @@ export const CartDropdown = ({ className }: CartDropdownProps) => {
         }).format(price);
     };
 
-    const updateQuantity = (id: string, newQuantity: number) => {
+    const updateQuantity = (id: number, newQuantity: number) => {
         if (newQuantity <= 0) {
-            removeItem(id);
             return;
         }
-
-        setCartItems(items =>
-            items.map(item =>
-                item.id === id ? { ...item, quantity: newQuantity } : item
-            )
-        );
-    };
-
-    const removeItem = (id: string) => {
-        setCartItems(items => items.filter(item => item.id !== id));
     };
 
     return (
@@ -66,10 +68,10 @@ export const CartDropdown = ({ className }: CartDropdownProps) => {
                 onPress={onOpen}
             >
                 <Badge
-                    content={totalItems}
+                    content={cart.items.length}
                     color="danger"
                     size="sm"
-                    isInvisible={totalItems === 0}
+                    isInvisible={cart.items.length === 0}
                     className="text-white"
                 >
                     <ShoppingCartBoldIcon className="w-6 h-6" />
@@ -88,33 +90,29 @@ export const CartDropdown = ({ className }: CartDropdownProps) => {
                         <div className="flex items-center gap-3">
                             <h3 className="text-xl font-semibold">Sepetim</h3>
                             <Chip size="sm" color="primary" variant="flat">
-                                {totalItems} ürün
+                                {cart.items.length} ürün
                             </Chip>
                         </div>
                     </DrawerHeader>
 
                     <DrawerBody className="p-0">
-                        {cartItems.length > 0 ? (
+                        {cart.items.length > 0 ? (
                             <div className="flex flex-col h-full">
                                 {/* Cart Items */}
                                 <div className="flex-1 overflow-y-auto">
-                                    {cartItems.map((item, index) => (
+                                    {cart.items.map((item, index) => (
                                         <div key={item.id}>
                                             <div className="p-4 flex items-start gap-4">
-                                                <Image
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className="w-20 h-20 object-cover ring-1 ring-default-200"
-                                                    radius="lg"
-                                                />
-
                                                 <div className="flex-1 min-w-0">
                                                     <h4 className="text-base font-medium text-default-900 mb-1">
-                                                        {item.name}
+                                                        {
+                                                            item.variants
+                                                                .product.title
+                                                        }
                                                     </h4>
                                                     <p className="text-lg font-semibold text-primary mb-3">
                                                         {formatPrice(
-                                                            item.price
+                                                            item.variants.price
                                                         )}
                                                     </p>
 
@@ -166,16 +164,14 @@ export const CartDropdown = ({ className }: CartDropdownProps) => {
                                                     size="sm"
                                                     variant="light"
                                                     color="danger"
-                                                    onPress={() =>
-                                                        removeItem(item.id)
-                                                    }
+                                                    // TODO: handle item remove
                                                     className="self-start"
                                                 >
                                                     <DeleteIcon className="w-5 h-5" />
                                                 </Button>
                                             </div>
 
-                                            {index < cartItems.length - 1 && (
+                                            {index < cart.items.length - 1 && (
                                                 <Divider />
                                             )}
                                         </div>
@@ -202,7 +198,7 @@ export const CartDropdown = ({ className }: CartDropdownProps) => {
                         )}
                     </DrawerBody>
 
-                    {cartItems.length > 0 && (
+                    {cart.items.length > 0 && (
                         <DrawerFooter className="border-t border-default-200 bg-default-50">
                             <div className="w-full space-y-4">
                                 {/* Total */}

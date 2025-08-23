@@ -9,7 +9,7 @@ import {
     Badge,
 } from '@heroui/react';
 import { SearchBar } from './search-bar';
-import { CartDropdown } from './cart-dropdown';
+import { CartDropdown } from '../../features/cart/ui/cart-sheet';
 import { UserDropdown } from './user-dropdown';
 import { CategoriesNav } from './categories-nav';
 import { MobileMenu } from './mobile-menu';

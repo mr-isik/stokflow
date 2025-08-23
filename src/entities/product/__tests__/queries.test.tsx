@@ -51,14 +51,14 @@ describe('Product Queries', () => {
                     title: 'Product 1',
                     slug: 'product-1',
                     product_images: [],
-                    product_variants: [{ price: 99.99 }],
+                    product_variants: [{ id: 1, price: 99.99 }],
                 },
                 {
                     id: 2,
                     title: 'Product 2',
                     slug: 'product-2',
                     product_images: [],
-                    product_variants: [{ price: 149.99 }],
+                    product_variants: [{ id: 2, price: 149.99 }],
                 },
             ],
             pagination: {
@@ -78,7 +78,7 @@ describe('Product Queries', () => {
                     title: 'Product 3',
                     slug: 'product-3',
                     product_images: [],
-                    product_variants: [{ price: 199.99 }],
+                    product_variants: [{ id: 3, price: 199.99 }],
                 },
             ],
             pagination: {
@@ -98,7 +98,7 @@ describe('Product Queries', () => {
                     title: 'Product 4',
                     slug: 'product-4',
                     product_images: [],
-                    product_variants: [{ price: 249.99 }],
+                    product_variants: [{ id: 4, price: 249.99 }],
                 },
             ],
             pagination: {

@@ -78,9 +78,7 @@ export function ProductCard({
                 {/* Actions */}
                 {onAddToCart && (
                     <ProductActions
-                        onAddToCart={handleAddToCart}
-                        isLoading={isLoading}
-                        data-testid={`add-to-cart-${product.id}`}
+                        variantId={product.product_variants[0].id}
                     />
                 )}
             </CardFooter>
