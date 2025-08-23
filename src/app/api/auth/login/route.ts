@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
         if (error) {
             console.error('Supabase login error:', error);
 
-            // Supabase hata kodlarına göre özel mesajlar
             let errorMessage = error.message;
 
             if (error.message.includes('Invalid login credentials')) {
@@ -36,6 +35,36 @@ export async function POST(request: NextRequest) {
                 },
                 { status: 400 }
             );
+        }
+
+        const { data: fetchedUser, error: userError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
+
+        if (userError) {
+            console.error('Error fetching user:', userError);
+            return Response.json({ message: 'Sunucu hatası' }, { status: 500 });
+        }
+
+        if (!fetchedUser) {
+            const { error: createUserError } = await supabase
+                .from('users')
+                .insert({
+                    email,
+                    role: 'user',
+                })
+                .select('*')
+                .single();
+
+            if (createUserError) {
+                console.error('Error creating user:', createUserError);
+                return Response.json(
+                    { message: 'Sunucu hatası' },
+                    { status: 500 }
+                );
+            }
         }
 
         return Response.json(data, { status: 200 });

@@ -41,6 +41,20 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        const { error: userError } = await supabase
+            .from('users')
+            .insert({
+                email,
+                role: 'user',
+            })
+            .select('*')
+            .single();
+
+        if (userError) {
+            console.error('Error inserting user:', userError);
+            return Response.json({ message: 'Sunucu hatası' }, { status: 500 });
+        }
+
         return Response.json(data, { status: 200 });
     } catch (error: unknown) {
         const errorMessage =
