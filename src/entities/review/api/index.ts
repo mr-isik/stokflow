@@ -1,10 +1,20 @@
 import { apiClient } from '@/shared/api/client';
-import { PaginatedReviewsResponse, paginatedReviewsSchema } from '../model';
+import {
+    PaginatedReviewsResponse,
+    paginatedReviewsSchema,
+    Review,
+} from '../model';
 
 export interface GetReviewsParams {
     productId: number;
     page?: number;
     limit?: number;
+}
+
+export interface CreateReviewParams {
+    productId: number;
+    rating: number;
+    comment: string;
 }
 
 export const reviewAPI = {
@@ -26,5 +36,18 @@ export const reviewAPI = {
         }
     },
 
-    /* TODO: add review */
+    async createReview(params: CreateReviewParams): Promise<Review> {
+        try {
+            const response = await apiClient.post<{ data: Review }>(
+                `/reviews/${params.productId}`,
+                {
+                    rating: params.rating,
+                    comment: params.comment,
+                }
+            );
+            return response.data;
+        } catch {
+            throw new Error('Yorum gönderilemedi. Lütfen tekrar deneyin.');
+        }
+    },
 };

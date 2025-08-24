@@ -12,6 +12,7 @@ import {
 } from '@heroui/react';
 import { IoStar, IoStarOutline } from 'react-icons/io5';
 import { useReviews } from '@/entities/review/queries';
+import { ReviewForm } from '@/features/review';
 
 interface ProductReviewsProps {
     productId: number;
@@ -196,7 +197,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {reviews.map((review, index) => (
+                                {reviews.map(review => (
                                     <div
                                         key={review.id}
                                         className="bg-default-50 rounded-xl p-6 border border-default-200"
@@ -286,13 +287,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                         paylaşın
                     </p>
                 </div>
-                <Button
-                    color="primary"
-                    size="lg"
-                    className="font-medium px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                    ⭐ Değerlendirme Yaz
-                </Button>
+                <ReviewForm productId={productId} />
             </div>
         </div>
     );
