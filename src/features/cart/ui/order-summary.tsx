@@ -40,7 +40,7 @@ export const CartOrderSummary = ({
 
     return (
         <div className={`xl:col-span-1 ${className}`}>
-            <Card className="shadow-sm sticky top-8">
+            <Card className="shadow-none border border-neutral-200 sticky top-8 p-4">
                 <CardHeader>
                     <h2 className="text-xl font-bold text-foreground">
                         Sipariş Özeti

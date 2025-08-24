@@ -97,9 +97,9 @@ export const CartDropdown = ({ className }: CartDropdownProps) => {
 
                     <DrawerBody className="p-0">
                         {cart.items.length > 0 ? (
-                            <div className="flex flex-col h-full">
+                            <div className="flex flex-col h-full w-full">
                                 {/* Cart Items */}
-                                <div className="flex-1 overflow-y-auto">
+                                <div className="flex-1 overflow-y-auto overflow-x-hidden">
                                     {cart.items.map((item: CartItem, index) => (
                                         <div key={item.id}>
                                             <div

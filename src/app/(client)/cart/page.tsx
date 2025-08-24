@@ -63,7 +63,10 @@ const CartPage = () => {
                     {/* Cart Items */}
                     <div className="xl:col-span-2 space-y-4">
                         {cart?.items.map((item: CartItem) => (
-                            <Card key={item.id} className="shadow-sm">
+                            <Card
+                                key={item.id}
+                                className="border border-neutral-200 shadow-none p-1.5"
+                            >
                                 <CardBody>
                                     <div
                                         className={`flex gap-4 transition-opacity duration-200 ${isItemLoading(item.id) ? 'opacity-60' : 'opacity-100'}`}
