@@ -29,10 +29,6 @@ export function ProductList() {
         [router]
     );
 
-    const onAddToCart = useCallback(async (_productId: number) => {
-        // Implement your add to cart logic here
-    }, []);
-
     useEffect(() => {
         const currentObserverRef = observerRef.current;
 
@@ -64,15 +60,6 @@ export function ProductList() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    const handleAddToCart = useCallback(
-        async (productId: number) => {
-            if (onAddToCart) {
-                await onAddToCart(productId);
-            }
-        },
-        [onAddToCart]
-    );
-
     const handleProductClick = useCallback(
         (productId: number, slug: string) => {
             if (onProductClick) {
@@ -103,13 +90,11 @@ export function ProductList() {
         );
     }
 
-    // Flatten all pages data - infinite query returns pages array
     const allProducts =
         data?.pages?.flatMap(
             page => (page as PaginatedProductsResponse).data
         ) || [];
 
-    // Empty state
     if (allProducts.length === 0 && !isFetching) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -137,7 +122,6 @@ export function ProductList() {
                             <ProductCard
                                 key={product.id}
                                 product={product}
-                                onAddToCart={handleAddToCart}
                                 onProductClick={handleProductClick}
                             />
                         )

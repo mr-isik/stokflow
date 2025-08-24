@@ -48,7 +48,6 @@ vi.mock('../ui/product-card/product-actions', () => ({
 }));
 
 describe('ProductCard', () => {
-    const mockOnAddToCart = vi.fn();
     const mockOnProductClick = vi.fn();
 
     beforeEach(() => {
@@ -59,7 +58,6 @@ describe('ProductCard', () => {
         render(
             <ProductCard
                 product={mockProduct}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );
@@ -76,7 +74,6 @@ describe('ProductCard', () => {
         render(
             <ProductCard
                 product={mockProduct}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );
@@ -96,7 +93,6 @@ describe('ProductCard', () => {
         render(
             <ProductCard
                 product={mockProduct}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );
@@ -110,71 +106,10 @@ describe('ProductCard', () => {
         );
     });
 
-    it('calls onAddToCart when add to cart button is clicked', async () => {
-        const user = userEvent.setup();
-
-        render(
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={mockOnAddToCart}
-                onProductClick={mockOnProductClick}
-            />
-        );
-
-        const addToCartBtn = screen.getByTestId('add-to-cart-btn');
-        await user.click(addToCartBtn);
-
-        await waitFor(() => {
-            expect(mockOnAddToCart).toHaveBeenCalledWith(mockProduct.id);
-        });
-    });
-
-    it('shows loading state when add to cart is processing', async () => {
-        const slowAddToCart = vi
-            .fn()
-            .mockImplementation(
-                () => new Promise(resolve => setTimeout(resolve, 100))
-            );
-
-        render(
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={slowAddToCart}
-                onProductClick={mockOnProductClick}
-            />
-        );
-
-        const addToCartBtn = screen.getByTestId('add-to-cart-btn');
-        fireEvent.click(addToCartBtn);
-
-        // Should show loading state
-        expect(addToCartBtn).toHaveTextContent('Ekleniyor...');
-        expect(addToCartBtn).toBeDisabled();
-
-        // Wait for loading to complete
-        await waitFor(() => {
-            expect(addToCartBtn).toHaveTextContent('Sepete Ekle');
-            expect(addToCartBtn).not.toBeDisabled();
-        });
-    });
-
-    it('does not render add to cart actions when onAddToCart is not provided', () => {
-        render(
-            <ProductCard
-                product={mockProduct}
-                onProductClick={mockOnProductClick}
-            />
-        );
-
-        expect(screen.queryByTestId('product-actions')).not.toBeInTheDocument();
-    });
-
     it('does not call onProductClick when it is not provided', async () => {
         const user = userEvent.setup();
 
-        render(
-            <ProductCard product={mockProduct} onAddToCart={mockOnAddToCart} />
-        );
+        render(<ProductCard product={mockProduct} />);
 
         const productTitle = screen.getByText(mockProduct.title);
         await user.click(productTitle);
@@ -187,7 +122,6 @@ describe('ProductCard', () => {
         const { container } = render(
             <ProductCard
                 product={mockProductWithoutImage}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );
@@ -199,7 +133,6 @@ describe('ProductCard', () => {
         render(
             <ProductCard
                 product={mockProduct}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );
@@ -228,7 +161,6 @@ describe('ProductCard', () => {
         render(
             <ProductCard
                 product={productWithoutFeatured}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );
@@ -243,7 +175,6 @@ describe('ProductCard', () => {
         render(
             <ProductCard
                 product={mockProduct}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
                 className={customClass}
             />
@@ -255,41 +186,15 @@ describe('ProductCard', () => {
         expect(card).toBeInTheDocument();
     });
 
-    it('handles add to cart errors gracefully', async () => {
-        const errorAddToCart = vi
-            .fn()
-            .mockRejectedValue(new Error('Network error'));
-
-        render(
-            <ProductCard
-                product={mockProduct}
-                onAddToCart={errorAddToCart}
-                onProductClick={mockOnProductClick}
-            />
-        );
-
-        const addToCartBtn = screen.getByTestId('add-to-cart-btn');
-        fireEvent.click(addToCartBtn);
-
-        // Should still reset loading state even after error
-        await waitFor(() => {
-            expect(addToCartBtn).toHaveTextContent('Sepete Ekle');
-            expect(addToCartBtn).not.toBeDisabled();
-        });
-
-        expect(errorAddToCart).toHaveBeenCalledWith(mockProduct.id);
-    });
-
     it('displays correct price from product variants', () => {
         render(
             <ProductCard
                 product={mockProduct}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );
 
-        expect(screen.getByText(/99\.99/)).toBeInTheDocument();
+        expect(screen.getByText('99.99 TL')).toBeInTheDocument();
     });
 
     it('truncates long product titles correctly', () => {
@@ -301,7 +206,6 @@ describe('ProductCard', () => {
         render(
             <ProductCard
                 product={productWithLongTitle}
-                onAddToCart={mockOnAddToCart}
                 onProductClick={mockOnProductClick}
             />
         );

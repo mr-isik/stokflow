@@ -18,24 +18,6 @@ describe('ProductActions', () => {
         expect(screen.getByRole('button')).toBeInTheDocument();
     });
 
-    it('calls onAddToCart when button is clicked', async () => {
-        const user = userEvent.setup();
-
-        render(<ProductActions variantId={1} />);
-
-        const button = screen.getByRole('button');
-        await user.click(button);
-
-        expect(mockOnAddToCart).toHaveBeenCalledTimes(1);
-    });
-
-    it('shows loading state when isLoading is true', () => {
-        render(<ProductActions variantId={1} />);
-
-        const button = screen.getByRole('button');
-        expect(button).toBeDisabled();
-    });
-
     it('is not disabled when isLoading is false', () => {
         render(<ProductActions variantId={1} />);
 
@@ -56,24 +38,5 @@ describe('ProductActions', () => {
         // The icon should be rendered (IoCartOutline)
         const button = screen.getByRole('button');
         expect(button.querySelector('svg')).toBeInTheDocument();
-    });
-
-    it('handles multiple rapid clicks', async () => {
-        render(<ProductActions variantId={1} />);
-
-        const button = screen.getByRole('button');
-
-        fireEvent.click(button);
-        fireEvent.click(button);
-        fireEvent.click(button);
-
-        expect(mockOnAddToCart).toHaveBeenCalledTimes(3);
-    });
-
-    it('has correct button size', () => {
-        render(<ProductActions variantId={1} />);
-
-        const button = screen.getByRole('button');
-        expect(button).toHaveClass('flex-1');
     });
 });

@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, CardBody, CardFooter } from '@heroui/react';
-import { useState } from 'react';
 import type { Product } from '../../model';
 import ProductImage from './product-image';
 import ProductPrice from './product-price';
@@ -9,30 +8,15 @@ import ProductActions from './product-actions';
 
 interface ProductCardProps {
     product: Product;
-    onAddToCart?: (productId: number) => void;
     onProductClick?: (productId: number, slug: string) => void;
     className?: string;
 }
 
 export function ProductCard({
     product,
-    onAddToCart,
     onProductClick,
     className = '',
 }: ProductCardProps) {
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleAddToCart = async () => {
-        if (!onAddToCart) return;
-
-        setIsLoading(true);
-        try {
-            await onAddToCart(product.id);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     const handleProductClick = () => {
         onProductClick?.(product.id, product.slug);
     };
@@ -76,11 +60,7 @@ export function ProductCard({
                 </div>
 
                 {/* Actions */}
-                {onAddToCart && (
-                    <ProductActions
-                        variantId={product.product_variants[0].id}
-                    />
-                )}
+                <ProductActions variantId={product.product_variants[0].id} />
             </CardFooter>
         </Card>
     );

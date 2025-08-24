@@ -234,6 +234,7 @@ describe('Product Model Schemas', () => {
                 ],
                 product_variants: [
                     {
+                        id: 1,
                         price: 99.99,
                     },
                 ],
@@ -252,7 +253,7 @@ describe('Product Model Schemas', () => {
                 title: 'Test Product',
                 slug: 'test-product',
                 product_images: [],
-                product_variants: [{ price: 99.99 }],
+                product_variants: [{ id: 1, price: 99.99 }],
             };
 
             const result = productSchema.safeParse(productWithoutImages);
@@ -276,7 +277,7 @@ describe('Product Model Schemas', () => {
                         is_featured: false,
                     },
                 ],
-                product_variants: [{ price: 99.99 }],
+                product_variants: [{ id: 1, price: 99.99 }],
             };
 
             const result = productSchema.safeParse(productWithMultipleImages);
@@ -302,7 +303,7 @@ describe('Product Model Schemas', () => {
                 title: 'Çikolata & Kahve Karışımı',
                 slug: 'cikolata-kahve-karisimi',
                 product_images: [],
-                product_variants: [{ price: 29.99 }],
+                product_variants: [{ id: 1, price: 29.99 }],
             };
 
             const result = productSchema.safeParse(productWithSpecialChars);
@@ -416,7 +417,7 @@ describe('Product Model Schemas', () => {
                         title: 'Product 1',
                         slug: 'product-1',
                         product_images: [],
-                        product_variants: [{ price: 99.99 }],
+                        product_variants: [{ id: 1, price: 99.99 }],
                     },
                 ],
                 pagination: {
@@ -465,7 +466,7 @@ describe('Product Model Schemas', () => {
                         title: 'Product 1',
                         slug: 'product-1',
                         product_images: [],
-                        product_variants: [{ price: 99.99 }],
+                        product_variants: [{ id: 1, price: 99.99 }],
                     },
                 ],
                 pagination: {
@@ -491,7 +492,7 @@ describe('Product Model Schemas', () => {
                         title: 'Product 2',
                         slug: 'product-2',
                         product_images: [],
-                        product_variants: [{ price: 149.99 }],
+                        product_variants: [{ id: 1, price: 149.99 }],
                     },
                 ],
                 pagination: {

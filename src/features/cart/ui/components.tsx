@@ -195,7 +195,10 @@ export const VariantOptions = ({
     size = 'sm',
     maxVisible,
 }: VariantOptionsProps) => {
-    if (!item.variants.variant_options.length) {
+    if (
+        !item.variants.variant_options.length ||
+        item.variants.variant_options.length < 2
+    ) {
         return null;
     }
 
