@@ -5,10 +5,11 @@ import { useAddToCart } from '../hooks/mutations';
 
 type Props = {
     variantId: number;
+    quantity?: number;
 };
 
-const AddToCartButton = ({ variantId }: Props) => {
-    const { mutate: addToCart, isPending } = useAddToCart(variantId);
+const AddToCartButton = ({ variantId, quantity = 1 }: Props) => {
+    const { mutate: addToCart, isPending } = useAddToCart(variantId, quantity);
 
     return (
         <Button

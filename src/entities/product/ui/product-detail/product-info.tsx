@@ -1,14 +1,7 @@
 'use client';
 
 import { Button, Badge, Divider } from '@heroui/react';
-import {
-    IoStar,
-    IoStarOutline,
-    IoAdd,
-    IoRemove,
-    IoHeart,
-    IoHeartOutline,
-} from 'react-icons/io5';
+import { IoAdd, IoRemove, IoHeart, IoHeartOutline } from 'react-icons/io5';
 import { useState } from 'react';
 import type { Product, ProductVariant } from '../../model';
 
@@ -18,6 +11,7 @@ interface ProductInfoProps {
     quantity: number;
     onQuantityChange: (quantity: number) => void;
     onAddToCart: () => void;
+    isAddingToCart?: boolean;
 }
 
 export function ProductInfo({
@@ -26,6 +20,7 @@ export function ProductInfo({
     quantity,
     onQuantityChange,
     onAddToCart,
+    isAddingToCart = false,
 }: ProductInfoProps) {
     const [isWishlisted, setIsWishlisted] = useState(false);
 
@@ -142,6 +137,7 @@ export function ProductInfo({
                     className="flex-1"
                     onPress={onAddToCart}
                     isDisabled={isOutOfStock}
+                    isLoading={isAddingToCart}
                 >
                     {isOutOfStock ? 'Stokta Yok' : 'Sepete Ekle'}
                 </Button>

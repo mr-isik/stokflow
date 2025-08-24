@@ -11,20 +11,15 @@ import ProductReviews from './product-reviews';
 import ProductDetailSkeleton from './product-detail-skeleton';
 import ErrorDisplay from './error-display';
 import { useQueryProductDetail } from '../../queries';
+import { useAddToCart } from '@/features/cart/hooks/mutations';
 
 interface ProductDetailProps {
     slug: string;
-    onAddToCart?: (
-        productId: number,
-        variantId: number,
-        quantity: number
-    ) => void;
     onVariantChange?: (variant: ProductVariant) => void;
 }
 
 export function ProductDetail({
     slug: _slug,
-    onAddToCart,
     onVariantChange,
 }: ProductDetailProps) {
     const router = useRouter();
@@ -37,6 +32,12 @@ export function ProductDetail({
 
     const [selectedVariant, setSelectedVariant] = useState<ProductVariant>();
     const [quantity, setQuantity] = useState(1);
+
+    // Initialize Add to Cart mutation with the selected variant
+    const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart(
+        selectedVariant?.id || 0,
+        quantity
+    );
 
     // Set initial variant when product is loaded
     useEffect(() => {
@@ -84,8 +85,8 @@ export function ProductDetail({
     };
 
     const handleAddToCart = () => {
-        if (!onAddToCart || !product || !selectedVariant) return;
-        onAddToCart(product.id, selectedVariant.id, quantity);
+        if (!product || !selectedVariant) return;
+        addToCart();
     };
 
     return (
@@ -113,6 +114,7 @@ export function ProductDetail({
                         quantity={quantity}
                         onQuantityChange={setQuantity}
                         onAddToCart={handleAddToCart}
+                        isAddingToCart={isAddingToCart}
                     />
 
                     <ProductVariants

@@ -9,4 +9,12 @@ export const cartAPI = {
     async addToCart(variant_id: number, quantity = 1) {
         return await apiClient.post(`/carts`, { variant_id, quantity });
     },
+
+    async updateCartItem(itemId: number, quantity: number) {
+        return await apiClient.put(`/cart-items/${itemId}`, { quantity });
+    },
+
+    async removeCartItem(itemId: number) {
+        return await apiClient.delete(`/cart-items/${itemId}`);
+    },
 };

@@ -21,7 +21,7 @@ export async function GET() {
         const { data: cart } = await supabase
             .from('carts')
             .select(
-                'id, items:cart_items(id, quantity, unit_price, variants:product_variants(id, sku, price, product:products(id, title, slug), variant_options:product_variant_options(name, value)))'
+                'id, items:cart_items(id, quantity, unit_price, variants:product_variants(id, sku, price, product:products(id, title, slug, product_images(url, alt, is_featured)), variant_options:product_variant_options(name, value)))'
             )
             .eq('user_id', user?.id)
             .single();
@@ -144,7 +144,9 @@ export async function POST(request: Request) {
 
         const { data: newCart } = await supabase
             .from('carts')
-            .select('*, cart_items(*):items')
+            .select(
+                '*, items:cart_items(id, quantity, unit_price, variants:product_variants(id, sku, price, product:products(id, title, slug, product_images(url, alt, is_featured)), variant_options:product_variant_options(name, value)))'
+            )
             .eq('id', cart.id)
             .single();
 

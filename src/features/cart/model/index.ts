@@ -8,6 +8,13 @@ export const cartItemVariantSchema = z.object({
         id: z.number(),
         title: z.string(),
         slug: z.string(),
+        product_images: z.array(
+            z.object({
+                url: z.string(),
+                alt: z.string(),
+                is_featured: z.boolean(),
+            })
+        ),
     }),
     variant_options: z.array(
         z.object({
