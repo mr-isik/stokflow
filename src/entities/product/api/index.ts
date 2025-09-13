@@ -9,12 +9,14 @@ import {
 interface GetProductsParams {
     pageParam?: number;
     pageSize?: number;
+    category?: string;
 }
 
 export const productsAPI = {
     async getProducts({
         pageParam = 0,
         pageSize = 10,
+        category = '',
     }: GetProductsParams): Promise<PaginatedProductsResponse> {
         try {
             const response = await apiClient.get<PaginatedProductsResponse>(
@@ -22,6 +24,7 @@ export const productsAPI = {
                 {
                     page: pageParam,
                     limit: pageSize,
+                    category,
                 },
                 paginatedProductsSchema
             );
