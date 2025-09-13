@@ -1,19 +1,19 @@
 'use client';
 
+import MaxWidthWrapper from '@/shared/ui/max-width-wrapper';
 import {
+    Badge,
+    Link,
     Navbar,
     NavbarBrand,
     NavbarContent,
     NavbarItem,
-    Link,
-    Badge,
 } from '@heroui/react';
-import { SearchBar } from './search-bar';
 import { CartDropdown } from '../../features/cart/ui/cart-sheet';
-import { UserDropdown } from './user-dropdown';
 import { CategoriesNav } from './categories-nav';
 import { MobileMenu } from './mobile-menu';
-import MaxWidthWrapper from '@/shared/ui/max-width-wrapper';
+import { SearchBar } from './search-bar';
+import { UserDropdown } from './user-dropdown';
 
 const Header = () => {
     return (

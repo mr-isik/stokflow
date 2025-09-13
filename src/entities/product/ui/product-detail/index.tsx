@@ -1,17 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardBody, Breadcrumbs, BreadcrumbItem } from '@heroui/react';
+import { useAddToCart } from '@/features/cart/hooks/mutations';
+import { BreadcrumbItem, Breadcrumbs, Card, CardBody } from '@heroui/react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import type { ProductVariant } from '../../model';
+import { useQueryProductDetail } from '../../queries';
+import ErrorDisplay from './error-display';
+import ProductDetailSkeleton from './product-detail-skeleton';
 import ProductImageGallery from './product-image-gallery';
 import ProductInfo from './product-info';
-import ProductVariants from './product-variants';
 import ProductReviews from './product-reviews';
-import ProductDetailSkeleton from './product-detail-skeleton';
-import ErrorDisplay from './error-display';
-import { useQueryProductDetail } from '../../queries';
-import { useAddToCart } from '@/features/cart/hooks/mutations';
+import ProductVariants from './product-variants';
 
 interface ProductDetailProps {
     slug: string;
@@ -33,25 +33,21 @@ export function ProductDetail({
     const [selectedVariant, setSelectedVariant] = useState<ProductVariant>();
     const [quantity, setQuantity] = useState(1);
 
-    // Initialize Add to Cart mutation with the selected variant
     const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart(
         selectedVariant?.id || 0,
         quantity
     );
 
-    // Set initial variant when product is loaded
     useEffect(() => {
         if (product?.product_variants?.[0] && !selectedVariant) {
             setSelectedVariant(product.product_variants[0]);
         }
     }, [product, selectedVariant]);
 
-    // Loading state with skeleton
     if (isLoading) {
         return <ProductDetailSkeleton />;
     }
 
-    // Error state with professional error display
     if (error) {
         const isNetworkError =
             error.message.includes('network') ||
@@ -67,14 +63,12 @@ export function ProductDetail({
         );
     }
 
-    // Not found state
     if (!product) {
         return (
             <ErrorDisplay type="not-found" onGoHome={() => router.push('/')} />
         );
     }
 
-    // Don't render until we have both product and selectedVariant
     if (!selectedVariant) {
         return <ProductDetailSkeleton />;
     }

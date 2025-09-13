@@ -1,8 +1,7 @@
 'use client';
 
-import { Button, Badge, Divider } from '@heroui/react';
-import { IoAdd, IoRemove, IoHeart, IoHeartOutline } from 'react-icons/io5';
-import { useState } from 'react';
+import { Badge, Button, Divider } from '@heroui/react';
+import { IoAdd, IoRemove } from 'react-icons/io5';
 import type { Product, ProductVariant } from '../../model';
 
 interface ProductInfoProps {
@@ -22,8 +21,6 @@ export function ProductInfo({
     onAddToCart,
     isAddingToCart = false,
 }: ProductInfoProps) {
-    const [isWishlisted, setIsWishlisted] = useState(false);
-
     const handleQuantityDecrease = () => {
         if (quantity > 1) {
             onQuantityChange(quantity - 1);
@@ -129,7 +126,6 @@ export function ProductInfo({
                 </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex gap-3">
                 <Button
                     color="primary"
@@ -140,35 +136,6 @@ export function ProductInfo({
                     isLoading={isAddingToCart}
                 >
                     {isOutOfStock ? 'Stokta Yok' : 'Sepete Ekle'}
-                </Button>
-
-                <Button
-                    isIconOnly
-                    variant="bordered"
-                    size="lg"
-                    onPress={() => setIsWishlisted(!isWishlisted)}
-                    className="w-12"
-                >
-                    {isWishlisted ? (
-                        <IoHeart className="w-5 h-5 text-danger" />
-                    ) : (
-                        <IoHeartOutline className="w-5 h-5" />
-                    )}
-                </Button>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="flex gap-2">
-                <Button
-                    variant="flat"
-                    size="sm"
-                    className="flex-1"
-                    isDisabled={isOutOfStock}
-                >
-                    Hemen Al
-                </Button>
-                <Button variant="flat" size="sm" className="flex-1">
-                    Karşılaştır
                 </Button>
             </div>
         </div>
