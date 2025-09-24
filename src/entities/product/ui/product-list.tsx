@@ -1,12 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
 import { Button } from '@heroui/react';
-import { ProductsSkeleton } from './product-skeleton';
-import type { Product, PaginatedProductsResponse } from '../model';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useRef } from 'react';
+import type { PaginatedProductsResponse, Product } from '../model';
 import { useInfiniteQueryProducts } from '../queries';
 import { ProductCard } from './product-card';
-import { useRouter } from 'next/navigation';
+import { ProductsSkeleton } from './product-skeleton';
 
 export function ProductList() {
     const observerRef = useRef<HTMLDivElement>(null);
@@ -20,10 +20,10 @@ export function ProductList() {
         isFetching,
         isFetchingNextPage,
         status,
-    } = useInfiniteQueryProducts();
+    } = useInfiniteQueryProducts({});
 
     const onProductClick = useCallback(
-        (productId: number, slug: string) => {
+        (slug: string) => {
             router.push(`/${slug}`);
         },
         [router]
@@ -61,9 +61,9 @@ export function ProductList() {
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     const handleProductClick = useCallback(
-        (productId: number, slug: string) => {
+        (slug: string) => {
             if (onProductClick) {
-                onProductClick(productId, slug);
+                onProductClick(slug);
             }
         },
         [onProductClick]

@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useInfiniteQueryProducts, useQueryProductDetail } from '../queries';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { productsAPI } from '../api';
-import type { PaginatedProductsResponse, DetailedProduct } from '../model';
+import type { DetailedProduct, PaginatedProductsResponse } from '../model';
+import { useInfiniteQueryProducts, useQueryProductDetail } from '../queries';
 
 // Mock the API
 vi.mock('../api', () => ({
@@ -116,7 +116,7 @@ describe('Product Queries', () => {
                 mockFirstPageResponse
             );
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -142,7 +142,7 @@ describe('Product Queries', () => {
                 .mockResolvedValueOnce(mockFirstPageResponse)
                 .mockResolvedValueOnce(mockSecondPageResponse);
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -180,7 +180,7 @@ describe('Product Queries', () => {
                 mockFirstPageResponse
             );
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -197,7 +197,7 @@ describe('Product Queries', () => {
                 mockLastPageResponse
             );
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -214,7 +214,7 @@ describe('Product Queries', () => {
                 mockFirstPageResponse
             );
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -231,7 +231,7 @@ describe('Product Queries', () => {
                 new Error(errorMessage)
             );
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -251,7 +251,7 @@ describe('Product Queries', () => {
                 .mockResolvedValueOnce(mockFirstPageResponse)
                 .mockRejectedValueOnce(new Error('Network error'));
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -275,7 +275,7 @@ describe('Product Queries', () => {
                 mockFirstPageResponse
             );
 
-            renderHook(() => useInfiniteQueryProducts(), { wrapper });
+            renderHook(() => useInfiniteQueryProducts({}), { wrapper });
 
             await waitFor(() => {
                 // Check if the query is in the cache with correct key
@@ -299,7 +299,7 @@ describe('Product Queries', () => {
 
             vi.mocked(productsAPI.getProducts).mockResolvedValue(emptyResponse);
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 
@@ -320,7 +320,7 @@ describe('Product Queries', () => {
 
             vi.mocked(productsAPI.getProducts).mockReturnValue(promise);
 
-            const { result } = renderHook(() => useInfiniteQueryProducts(), {
+            const { result } = renderHook(() => useInfiniteQueryProducts({}), {
                 wrapper,
             });
 

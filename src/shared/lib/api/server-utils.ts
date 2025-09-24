@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ZodSchema } from 'zod';
-import { normalizeError, type AppError, ERROR_MESSAGES } from '../errors';
+import { ERROR_MESSAGES, normalizeError } from '../errors';
 
 // API route error handler
 export function handleApiError(error: unknown): NextResponse {

@@ -1,18 +1,30 @@
-import { InfiniteData } from '@tanstack/react-query';
 import {
-    useAppQuery,
     useAppInfiniteQuery,
+    useAppQuery,
 } from '@/shared/hooks/use-error-handler';
 import { productsAPI } from '../api';
 import type { PaginatedProductsResponse } from '../model';
 
-export const useInfiniteQueryProducts = () => {
+export const useInfiniteQueryProducts = ({
+    pageSize = 10,
+    category,
+    query,
+    priceRange,
+}: {
+    pageSize?: number;
+    category?: string;
+    query?: string;
+    priceRange?: [number, number];
+}) => {
     return useAppInfiniteQuery({
         queryKey: ['products'],
         queryFn: ({ pageParam = 0 }) =>
             productsAPI.getProducts({
                 pageParam,
-                pageSize: 10,
+                pageSize,
+                category,
+                query,
+                priceRange,
             }),
         initialPageParam: 0,
         getNextPageParam: (lastPage: PaginatedProductsResponse) => {

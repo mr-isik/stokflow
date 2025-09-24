@@ -7,6 +7,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
+        "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
         "test": "vitest",
         "test:ui": "vitest --ui --coverage.enabled=true",
         "test:run": "vitest run",
@@ -28,6 +29,7 @@
         "react-hook-form": "^7.61.1",
         "react-icons": "^5.5.0",
         "react-intersection-observer": "^9.16.0",
+        "use-debounce": "^10.0.6",
         "zod": "^4.0.13"
     },
     "devDependencies": {

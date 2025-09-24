@@ -10,6 +10,9 @@ interface GetProductsParams {
     pageParam?: number;
     pageSize?: number;
     category?: string;
+    query?: string;
+    priceRange?: [number, number];
+    sort?: 'price_asc' | 'price_desc' | 'highest_rated' | 'most_reviewed';
 }
 
 export const productsAPI = {
@@ -17,6 +20,8 @@ export const productsAPI = {
         pageParam = 0,
         pageSize = 10,
         category = '',
+        query = '',
+        priceRange,
     }: GetProductsParams): Promise<PaginatedProductsResponse> {
         try {
             const response = await apiClient.get<PaginatedProductsResponse>(
@@ -25,6 +30,9 @@ export const productsAPI = {
                     page: pageParam,
                     limit: pageSize,
                     category,
+                    query,
+                    minPrice: priceRange ? priceRange[0] : undefined,
+                    maxPrice: priceRange ? priceRange[1] : undefined,
                 },
                 paginatedProductsSchema
             );

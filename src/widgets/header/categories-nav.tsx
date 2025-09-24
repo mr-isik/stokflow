@@ -43,7 +43,7 @@ export const CategoriesNav = ({ className }: CategoriesNavProps) => {
                 <Button
                     key={category.id}
                     as={Link}
-                    href={`/products?category=${category.slug}`}
+                    href={`/categories/${category.slug}`}
                     variant="light"
                     size="md"
                     className="text-default-700 hover:text-primary hover:bg-primary/10 font-medium transition-all duration-300 h-10 px-4"

@@ -1,18 +1,15 @@
 'use client';
 
+import { useAuth } from '@/shared/hooks';
 import {
-    Dropdown,
-    DropdownTrigger,
-    DropdownMenu,
-    DropdownItem,
-    DropdownSection,
     Button,
-    Avatar,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownSection,
+    DropdownTrigger,
     Link,
 } from '@heroui/react';
-import { useState } from 'react';
-import { User } from './types';
-import { useAuth } from '@/shared/hooks';
 
 interface UserDropdownProps {
     className?: string;

@@ -8,27 +8,68 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '0');
     const limit = parseInt(searchParams.get('limit') || '10');
     const category = searchParams.get('category') || '';
+    const query = searchParams.get('query') || '';
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
 
     const offset = page * limit;
 
     try {
         if (category) {
-            const { count } = await supabase
+            const needsPriceFilter = minPrice || maxPrice;
+
+            let countQuery = supabase
                 .from('products')
                 .select(
-                    'id, product_categories!inner(categories!inner(slug))',
+                    needsPriceFilter
+                        ? 'id, product_categories!inner(categories!inner(slug)), product_variants!inner(id, price)'
+                        : 'id, product_categories!inner(categories!inner(slug))',
                     { count: 'exact', head: true }
                 )
                 .eq('product_categories.categories.slug', category);
 
-            const { data, error } = await supabase
+            let dataQuery = supabase
                 .from('products')
                 .select(
-                    'id, title, slug, product_images(url, alt, is_featured), product_variants(id, price), product_categories!inner(categories!inner(slug))'
+                    needsPriceFilter
+                        ? 'id, title, slug, product_images(url, alt, is_featured), product_variants!inner(id, price), product_categories!inner(categories!inner(slug))'
+                        : 'id, title, slug, product_images(url, alt, is_featured), product_variants(id, price), product_categories!inner(categories!inner(slug))'
                 )
-                .eq('product_categories.categories.slug', category)
-                .range(offset, offset + limit - 1)
-                .order('created_at', { ascending: false });
+                .eq('product_categories.categories.slug', category);
+
+            if (query) {
+                countQuery = countQuery.ilike('title', `%${query}%`);
+                dataQuery = dataQuery.ilike('title', `%${query}%`);
+            }
+
+            if (minPrice) {
+                const minPriceNum = parseFloat(minPrice);
+                countQuery = countQuery.gte(
+                    'product_variants.price',
+                    minPriceNum
+                );
+                dataQuery = dataQuery.gte(
+                    'product_variants.price',
+                    minPriceNum
+                );
+            }
+            if (maxPrice) {
+                const maxPriceNum = parseFloat(maxPrice);
+                countQuery = countQuery.lte(
+                    'product_variants.price',
+                    maxPriceNum
+                );
+                dataQuery = dataQuery.lte(
+                    'product_variants.price',
+                    maxPriceNum
+                );
+            }
+
+            const { count } = await countQuery;
+            const { data, error } = await dataQuery.range(
+                offset,
+                offset + limit - 1
+            );
 
             if (error) {
                 return Response.json({ error: error.message }, { status: 400 });
@@ -51,17 +92,47 @@ export async function GET(request: NextRequest) {
             return Response.json(response, { status: 200 });
         }
 
-        const { count } = await supabase
-            .from('products')
-            .select('id', { count: 'exact', head: true });
+        // Default query without category filter
+        const needsPriceFilter = minPrice || maxPrice;
 
-        const { data, error } = await supabase
+        let countQuery = supabase
             .from('products')
             .select(
-                'id, title, slug, product_images(url, alt, is_featured), product_variants(id, price)'
-            )
-            .range(offset, offset + limit - 1)
-            .order('created_at', { ascending: false });
+                needsPriceFilter
+                    ? 'id, product_variants!inner(id, price)'
+                    : 'id',
+                { count: 'exact', head: true }
+            );
+
+        let dataQuery = supabase
+            .from('products')
+            .select(
+                needsPriceFilter
+                    ? 'id, title, slug, product_images(url, alt, is_featured), product_variants!inner(id, price)'
+                    : 'id, title, slug, product_images(url, alt, is_featured), product_variants(id, price)'
+            );
+
+        if (query) {
+            countQuery = countQuery.ilike('title', `%${query}%`);
+            dataQuery = dataQuery.ilike('title', `%${query}%`);
+        }
+
+        if (minPrice) {
+            const minPriceNum = parseFloat(minPrice);
+            countQuery = countQuery.gte('product_variants.price', minPriceNum);
+            dataQuery = dataQuery.gte('product_variants.price', minPriceNum);
+        }
+        if (maxPrice) {
+            const maxPriceNum = parseFloat(maxPrice);
+            countQuery = countQuery.lte('product_variants.price', maxPriceNum);
+            dataQuery = dataQuery.lte('product_variants.price', maxPriceNum);
+        }
+
+        const { count } = await countQuery;
+        const { data, error } = await dataQuery.range(
+            offset,
+            offset + limit - 1
+        );
 
         if (error) {
             return Response.json({ error: error.message }, { status: 400 });

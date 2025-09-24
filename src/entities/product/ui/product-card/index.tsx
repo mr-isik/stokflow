@@ -2,13 +2,13 @@
 
 import { Card, CardBody, CardFooter } from '@heroui/react';
 import type { Product } from '../../model';
+import ProductActions from './product-actions';
 import ProductImage from './product-image';
 import ProductPrice from './product-price';
-import ProductActions from './product-actions';
 
 interface ProductCardProps {
     product: Product;
-    onProductClick?: (productId: number, slug: string) => void;
+    onProductClick?: (slug: string) => void;
     className?: string;
 }
 
@@ -18,7 +18,7 @@ export function ProductCard({
     className = '',
 }: ProductCardProps) {
     const handleProductClick = () => {
-        onProductClick?.(product.id, product.slug);
+        onProductClick?.(product.slug);
     };
 
     const featuredImage =
