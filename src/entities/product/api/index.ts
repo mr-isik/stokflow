@@ -12,7 +12,6 @@ interface GetProductsParams {
     category?: string;
     query?: string;
     priceRange?: [number, number];
-    sort?: 'price_asc' | 'price_desc' | 'highest_rated' | 'most_reviewed';
 }
 
 export const productsAPI = {

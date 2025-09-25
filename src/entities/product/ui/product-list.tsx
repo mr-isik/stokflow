@@ -93,7 +93,7 @@ export function ProductList() {
     const allProducts =
         data?.pages?.flatMap(
             page => (page as PaginatedProductsResponse).data
-        ) || [];
+        ) ?? [];
 
     if ((allProducts.length === 0 && !isFetching) || !allProducts) {
         return (
@@ -112,7 +112,7 @@ export function ProductList() {
         <div className="space-y-8">
             {/* Products Grid */}
 
-            {data.pages.map((page, index: number) => (
+            {data?.pages?.map((page, index: number) => (
                 <div
                     key={index}
                     className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-6"
