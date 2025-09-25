@@ -1,3 +1,5 @@
+'use client';
+
 import { useInfiniteQueryProducts } from '@/entities/product/queries';
 import { ProductCard } from '@/entities/product/ui/product-card';
 import MaxWidthWrapper from '@/shared/ui/max-width-wrapper';
