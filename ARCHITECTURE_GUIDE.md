@@ -7,7 +7,6 @@ This project uses the **Feature-Sliced Design** (FSD) architecture. This guide w
 ```
 src/
 ├── app/                    # Next.js App Router (Routes)
-├── processes/              # Complex business processes
 ├── pages/                  # Page components (FSD)
 ├── widgets/                # Independent UI blocks
 ├── features/               # Business features
@@ -18,7 +17,7 @@ src/
 
 ## 🎯 Layer Descriptions and Examples
 
-### 1. 📱 **App Layer** (`src/app/`)
+### 📱 **App Layer** (`src/app/`)
 
 **What**: Next.js App Router routes and layouts
 **When to use**: For page routes and layouts
@@ -30,18 +29,7 @@ src / app / page.tsx; // Main page
 src / app / client / products / page.tsx; // Products page
 ```
 
-### 2. 🔄 **Processes Layer** (`src/processes/`)
-
-**What**: Complex business processes that coordinate multiple features
-**When to use**: For cross-feature workflows
-
-```typescript
-// ✅ Correct placement examples:
-src/processes/checkout-flow/          // Checkout process
-src/processes/auth/                   // Authentication process
-```
-
-### 3. 📄 **Pages Layer** (`src/pages/`)
+### 📄 **Pages Layer** (`src/pages/`)
 
 **What**: Page components (not to be confused with Next.js pages)
 **When to use**: For page-level components
@@ -52,7 +40,7 @@ src / pages / product - details / ui / ProductDetailsPage.tsx;
 src / pages / checkout / ui / CheckoutPage.tsx;
 ```
 
-### 4. 🧩 **Widgets Layer** (`src/widgets/`)
+### 🧩 **Widgets Layer** (`src/widgets/`)
 
 **What**: Independent UI blocks that combine multiple features
 **When to use**: For reusable UI blocks
@@ -64,7 +52,7 @@ src/widgets/footer/                   // Site footer
 src/widgets/product-card/             // Product card widget
 ```
 
-### 5. ✨ **Features Layer** (`src/features/`)
+### ✨ **Features Layer** (`src/features/`)
 
 **What**: User interactions that provide business value
 **When to use**: For user-facing functionality
@@ -86,7 +74,7 @@ feature/
 └── lib/          # Helper functions
 ```
 
-### 6. 📦 **Entities Layer** (`src/entities/`)
+### 📦 **Entities Layer** (`src/entities/`)
 
 **What**: Business domain models
 **When to use**: For core business entities
@@ -108,7 +96,7 @@ entity/
 └── lib/          # Entity helper functions
 ```
 
-### 7. 🔧 **Shared Layer** (`src/shared/`)
+### 🔧 **Shared Layer** (`src/shared/`)
 
 **What**: Reusable code shared across all layers
 **When to use**: For utilities, types, and common components

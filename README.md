@@ -69,9 +69,6 @@ src/
 │       ├── cart/
 │       ├── checkout/
 │       └── products/
-├── processes/             # Business processes
-│   ├── auth/
-│   └── checkout-flow/
 ├── widgets/               # UI widgets
 ├── features/              # Features
 │   ├── add-to-cart/
