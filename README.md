@@ -1,4 +1,8 @@
-# E-Commerce Project Architecture Documentation
+# Stokflow - E Commerce Project
+
+<div align="center">
+  <img src="src/assets/logo.svg" alt="Postify API Logo" width="100%">
+</div>
 
 ## 📋 Table of Contents
 
