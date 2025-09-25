@@ -32,7 +32,7 @@ This project is an e-commerce application developed using modern web technologie
 
 - **ESLint** - Code quality and standards
 - **PostCSS** - CSS processing
-- **Turbopack** - Fast development server
+- **Turbopack** - Fast Next.js development server
 
 ### HTTP Client
 
@@ -45,12 +45,11 @@ This project uses the Feature-Sliced Design methodology, a modern architecture d
 ### FSD Layers (Top to Bottom)
 
 1. **app** - Application startup and global configuration
-2. **processes** - Complex business processes (cross-feature interactions)
-3. **pages** - Page components (integrated with Next.js App Router)
-4. **widgets** - Independent UI blocks
-5. **features** - User interactions with business value
-6. **entities** - Business entities
-7. **shared** - Reusable code
+2. **pages** - Page components (integrated with Next.js App Router)
+3. **widgets** - Independent UI blocks
+4. **features** - User interactions with business value
+5. **entities** - Business entities
+6. **shared** - Reusable code
 
 ## 📁 Directory Structure
 
