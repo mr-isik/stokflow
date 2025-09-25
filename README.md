@@ -1,7 +1,7 @@
 # Stokflow - E Commerce Project
 
 <div align="center">
-  <img src="src/assets/logo.svg" alt="Postify API Logo" width="100%">
+  <img src="./public/screenshot.png" alt="Postify API Logo" width="100%">
 </div>
 
 ## 📋 Table of Contents
