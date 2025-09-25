@@ -95,7 +95,7 @@ export function ProductList() {
             page => (page as PaginatedProductsResponse).data
         ) || [];
 
-    if (allProducts.length === 0 && !isFetching) {
+    if ((allProducts.length === 0 && !isFetching) || !allProducts) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="text-lg font-semibold text-foreground-700 mb-2">
