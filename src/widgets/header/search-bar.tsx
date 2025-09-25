@@ -1,65 +1,30 @@
 'use client';
 
-import { Input, Button, Card, CardBody, Image, Divider } from '@heroui/react';
-import { useState, useMemo } from 'react';
-import { SearchIcon, CloseIcon } from '@heroui/shared-icons';
-import { SearchResult } from './types';
+import { useQuerySearchProducts } from '@/entities/product/queries';
+import {
+    Button,
+    Card,
+    CardBody,
+    Divider,
+    Image,
+    Input,
+    Spinner,
+} from '@heroui/react';
+import { CloseIcon, SearchIcon } from '@heroui/shared-icons';
+import { QueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
 interface SearchBarProps {
     className?: string;
 }
 
-// Mock search data
-const MOCK_SEARCH_RESULTS: SearchResult[] = [
-    {
-        id: '1',
-        name: 'iPhone 15 Pro Max',
-        price: 52999,
-        category: 'Elektronik',
-        image: '/api/placeholder/40/40',
-    },
-    {
-        id: '2',
-        name: 'Samsung Galaxy S24',
-        price: 35999,
-        category: 'Elektronik',
-        image: '/api/placeholder/40/40',
-    },
-    {
-        id: '3',
-        name: 'MacBook Pro M3',
-        price: 65999,
-        category: 'Bilgisayar',
-        image: '/api/placeholder/40/40',
-    },
-    {
-        id: '4',
-        name: 'Nike Air Max',
-        price: 3499,
-        category: 'Ayakkabı',
-        image: '/api/placeholder/40/40',
-    },
-    {
-        id: '5',
-        name: 'Adidas Ultraboost',
-        price: 4299,
-        category: 'Ayakkabı',
-        image: '/api/placeholder/40/40',
-    },
-    {
-        id: '6',
-        name: 'Sony WH-1000XM5',
-        price: 8999,
-        category: 'Ses Sistemleri',
-        image: '/api/placeholder/40/40',
-    },
-];
-
 export const SearchBar = ({ className }: SearchBarProps) => {
     const [searchValue, setSearchValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
 
-    // Responsive placeholder
     const getPlaceholder = () => {
         if (typeof window !== 'undefined' && window.innerWidth < 640) {
             return 'Ürün ara...';
@@ -67,15 +32,22 @@ export const SearchBar = ({ className }: SearchBarProps) => {
         return 'Ürün, kategori veya marka ara...';
     };
 
-    const filteredResults = useMemo(() => {
-        if (!searchValue) return [];
+    const queryClient = new QueryClient();
+    const [debouncedSearchValue] = useDebounce(searchValue, 300);
 
-        return MOCK_SEARCH_RESULTS.filter(
-            item =>
-                item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-                item.category.toLowerCase().includes(searchValue.toLowerCase())
-        );
-    }, [searchValue]);
+    const {
+        data: searchResults,
+        isLoading,
+        error,
+    } = useQuerySearchProducts(debouncedSearchValue);
+
+    useEffect(() => {
+        queryClient.resetQueries({
+            queryKey: ['searchProducts', debouncedSearchValue],
+            exact: true,
+            stale: true,
+        });
+    }, [debouncedSearchValue, queryClient]);
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('tr-TR', {
@@ -124,55 +96,60 @@ export const SearchBar = ({ className }: SearchBarProps) => {
             {isOpen && searchValue && (
                 <Card className="absolute top-full left-0 right-0 z-50 mt-2 max-h-96 overflow-y-auto shadow-xl border border-default-200">
                     <CardBody className="p-0">
-                        {filteredResults.length > 0 ? (
+                        {searchResults && searchResults?.data?.length > 0 ? (
                             <>
                                 <div className="p-3 text-small text-default-600 bg-gradient-to-r from-default-50 to-default-100">
                                     <span className="font-medium">
-                                        {filteredResults.length} sonuç bulundu
+                                        {searchResults.data.length} sonuç
+                                        bulundu
                                     </span>
                                     <span className="text-xs ml-2 text-default-500">
                                         "{searchValue}" için
                                     </span>
                                 </div>
                                 <Divider />
-                                {filteredResults.map((result, index) => (
+                                {searchResults.data.map((result, index) => (
                                     <div key={result.id}>
                                         <div
                                             className="flex items-center gap-3 p-3 hover:bg-default-50 cursor-pointer transition-colors duration-200"
                                             onClick={() => {
-                                                // Navigate to product page
+                                                router.push(`/${result.slug}`);
                                                 setSearchValue('');
                                                 setIsOpen(false);
                                             }}
                                         >
                                             <Image
-                                                src={result.image}
-                                                alt={result.name}
+                                                src={
+                                                    result.product_images[0]
+                                                        ?.url
+                                                }
+                                                alt={result.title}
                                                 className="w-12 h-12 object-cover ring-1 ring-default-200"
                                                 radius="md"
                                             />
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-small font-medium text-default-900 truncate">
-                                                    {result.name}
-                                                </p>
-                                                <p className="text-tiny text-default-500 flex items-center gap-1">
-                                                    <span>🏷️</span>
-                                                    {result.category}
+                                                    {result.title}
                                                 </p>
                                             </div>
                                             <div className="text-right flex-shrink-0">
                                                 <p className="text-small font-semibold text-primary-600">
-                                                    {formatPrice(result.price)}
+                                                    {formatPrice(
+                                                        result
+                                                            .product_variants[0]
+                                                            .price
+                                                    )}
                                                 </p>
                                             </div>
                                         </div>
-                                        {index < filteredResults.length - 1 && (
+                                        {index <
+                                            searchResults.data.length - 1 && (
                                             <Divider />
                                         )}
                                     </div>
                                 ))}
                             </>
-                        ) : (
+                        ) : !isLoading ? (
                             <div className="p-8 text-center text-default-500">
                                 <SearchIcon className="mx-auto mb-3 w-8 h-8 text-default-300" />
                                 <p className="text-small font-medium">
@@ -182,18 +159,34 @@ export const SearchBar = ({ className }: SearchBarProps) => {
                                     Farklı anahtar kelimeler deneyin
                                 </p>
                             </div>
+                        ) : (
+                            <div className="p-8 text-center text-default-500">
+                                <Spinner />
+                            </div>
+                        )}
+
+                        {error && (
+                            <Card className="m-4 bg-red-50 border border-red-200">
+                                <CardBody className="p-3 text-red-700 text-center text-small">
+                                    Arama sonuçları alınamadı. Lütfen tekrar
+                                    deneyin.
+                                </CardBody>
+                            </Card>
                         )}
                     </CardBody>
                 </Card>
             )}
 
             {/* Backdrop - only show when search has results */}
-            {isOpen && searchValue && filteredResults.length > 0 && (
-                <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
+            {isOpen &&
+                searchValue &&
+                searchResults &&
+                searchResults.data.length > 0 && (
+                    <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setIsOpen(false)}
+                    />
+                )}
         </div>
     );
 };

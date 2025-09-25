@@ -72,7 +72,7 @@ export const CategoriesNav = ({ className }: CategoriesNavProps) => {
                             <DropdownItem
                                 key={category.id}
                                 as={Link}
-                                href={`/products?category=${category.slug}`}
+                                href={`/categories/${category.slug}`}
                                 className="text-default-700 hover:text-primary"
                             >
                                 {category.name}

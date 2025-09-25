@@ -47,3 +47,14 @@ export const useQueryProductDetail = (slug: string) => {
         retry: 1,
     });
 };
+
+export const useQuerySearchProducts = (searchTerm: string) => {
+    return useAppQuery({
+        queryKey: ['searchProducts', searchTerm],
+        queryFn: () => productsAPI.getProducts({ query: searchTerm }),
+        enabled: !!searchTerm,
+        refetchOnWindowFocus: false,
+        retry: 1,
+        staleTime: 5 * 60 * 1000,
+    });
+};

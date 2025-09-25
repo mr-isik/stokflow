@@ -1,393 +1,217 @@
-# 🏗️ E-Commerce Projesi - Feature-Sliced Design (FSD) Mimari Rehberi
+# 🏗️ E-Commerce Project - Feature-Sliced Design (FSD) Architecture Guide
 
-Bu proje **Feature-Sliced Design** (FSD) mimarisini kullanır. Bu rehber, hangi dosyayı nereye koyacağınızı anlamanıza yardımcı olur.
+This project uses the **Feature-Sliced Design** (FSD) architecture. This guide will help you understand where to place your files.
 
-## 📁 Proje Yapısı
+## 📁 Project Structure
 
 ```
 src/
 ├── app/                    # Next.js App Router (Routes)
-├── processes/              # Karmaşık iş süreçleri
-├── pages/                  # Sayfa bileşenleri (FSD)
-├── widgets/                # Bağımsız UI blokları
-├── features/               # İş özellikleri
-├── entities/               # İş varlıkları
-├── shared/                 # Paylaşılan kod
-└── styles/                 # Global stiller
+├── processes/              # Complex business processes
+├── pages/                  # Page components (FSD)
+├── widgets/                # Independent UI blocks
+├── features/               # Business features
+├── entities/               # Business entities
+├── shared/                 # Shared code
+└── styles/                 # Global styles
 ```
 
-## 🎯 Katman Açıklamaları ve Örnekler
+## 🎯 Layer Descriptions and Examples
 
 ### 1. 📱 **App Layer** (`src/app/`)
 
-**Ne**: Next.js App Router rotaları ve layout'ları
-**Ne zaman kullan**: Sayfa rotaları ve layout'lar için
+**What**: Next.js App Router routes and layouts
+**When to use**: For page routes and layouts
 
 ```typescript
-// ✅ Doğru yerleştirme örnekleri:
-src / app / layout.tsx; // Ana layout
-src / app / page.tsx; // Ana sayfa
-src / app / client / products / page.tsx; // Ürünler sayfası
-src / app / admin / dashboard / page.tsx; // Admin dashboard
-src / app / api / users / route.ts; // API route'ları
+// ✅ Correct placement examples:
+src / app / layout.tsx; // Main layout
+src / app / page.tsx; // Main page
+src / app / client / products / page.tsx; // Products page
 ```
 
 ### 2. 🔄 **Processes Layer** (`src/processes/`)
 
-**Ne**: Karmaşık iş süreçleri, çok aşamalı operasyonlar
-**Ne zaman kullan**: Birden fazla feature'ı koordine eden süreçler
+**What**: Complex business processes that coordinate multiple features
+**When to use**: For cross-feature workflows
 
 ```typescript
-// ✅ Süreç örnekleri:
-src/processes/
-├── checkout-flow/           // Satın alma süreci
-│   ├── model/              // Süreç state yönetimi
-│   ├── ui/                 // Süreç UI bileşenleri
-│   └── lib/                // Süreç mantığı
-├── auth/                   // Kimlik doğrulama süreci
-│   ├── login-flow.ts       // Giriş süreci
-│   ├── register-flow.ts    // Kayıt süreci
-│   └── password-reset.ts   // Şifre sıfırlama
-└── order-management/       // Sipariş yönetimi
-    ├── order-creation.ts   // Sipariş oluşturma
-    ├── payment-processing.ts // Ödeme işleme
-    └── order-tracking.ts   // Sipariş takibi
+// ✅ Correct placement examples:
+src/processes/checkout-flow/          // Checkout process
+src/processes/auth/                   // Authentication process
 ```
 
 ### 3. 📄 **Pages Layer** (`src/pages/`)
 
-**Ne**: Sayfa-seviyesi bileşenler (Next.js App Router kullandığımız için bu katman yok)
-**Alternatif**: `src/app/` kullanıyoruz
+**What**: Page components (not to be confused with Next.js pages)
+**When to use**: For page-level components
+
+```typescript
+// ✅ Correct placement examples:
+src / pages / product - details / ui / ProductDetailsPage.tsx;
+src / pages / checkout / ui / CheckoutPage.tsx;
+```
 
 ### 4. 🧩 **Widgets Layer** (`src/widgets/`)
 
-**Ne**: Bağımsız, yeniden kullanılabilir UI blokları
-**Ne zaman kullan**: Sayfalar arası paylaşılan büyük UI bileşenleri
+**What**: Independent UI blocks that combine multiple features
+**When to use**: For reusable UI blocks
 
 ```typescript
-// ✅ Widget örnekleri:
-src/widgets/
-├── header/                 // Site başlığı
-│   ├── index.tsx          // Ana header bileşeni
-│   ├── search-bar.tsx     // Arama çubuğu
-│   ├── user-dropdown.tsx  // Kullanıcı menüsü
-│   ├── cart-dropdown.tsx  // Sepet menüsü
-│   └── mobile-menu.tsx    // Mobil menü
-├── footer/                 // Site altbilgisi
-│   ├── index.tsx
-│   ├── newsletter.tsx     // Newsletter kayıt
-│   └── social-links.tsx   // Sosyal medya linkleri
-├── sidebar/                // Kenar çubuğu
-│   ├── filter-sidebar.tsx // Ürün filtreleri
-│   └── category-tree.tsx  // Kategori ağacı
-└── product-grid/           // Ürün listesi
-    ├── index.tsx
-    ├── product-card.tsx
-    └── pagination.tsx
+// ✅ Correct placement examples:
+src/widgets/header/                   // Site header
+src/widgets/footer/                   // Site footer
+src/widgets/product-card/             // Product card widget
 ```
 
-### 5. ⚡ **Features Layer** (`src/features/`)
+### 5. ✨ **Features Layer** (`src/features/`)
 
-**Ne**: İş özellikleri, kullanıcı etkileşimleri
-**Ne zaman kullan**: Belirli bir işlev veya özellik için
+**What**: User interactions that provide business value
+**When to use**: For user-facing functionality
 
 ```typescript
-// ✅ Feature örnekleri:
-src/features/
-├── auth/                   // Kimlik doğrulama
-│   ├── ui/
-│   │   ├── login-form.tsx
-│   │   ├── register-form.tsx
-│   │   └── logout-button.tsx
-│   ├── model/
-│   │   ├── auth-store.ts   // Auth state
-│   │   └── auth-types.ts
-│   └── api/
-│       └── auth-api.ts
-├── add-to-cart/            // Sepete ekleme
-│   ├── ui/
-│   │   ├── add-to-cart-button.tsx
-│   │   └── quantity-selector.tsx
-│   ├── model/
-│   │   └── cart-actions.ts
-│   └── api/
-│       └── cart-api.ts
-├── product-search/         // Ürün arama
-│   ├── ui/
-│   │   ├── search-input.tsx
-│   │   ├── search-filters.tsx
-│   │   └── search-results.tsx
-│   ├── model/
-│   │   └── search-store.ts
-│   └── api/
-│       └── search-api.ts
-├── wishlist/               // Favori listesi
-│   ├── ui/
-│   │   ├── wishlist-button.tsx
-│   │   └── wishlist-modal.tsx
-│   └── model/
-│       └── wishlist-store.ts
-└── product-review/         // Ürün yorumları
-    ├── ui/
-    │   ├── review-form.tsx
-    │   ├── review-list.tsx
-    │   └── rating-stars.tsx
-    └── api/
-        └── review-api.ts
+// ✅ Correct placement examples:
+src/features/add-to-cart/             // Add to cart feature
+src/features/product-search/          // Product search feature
+src/features/auth/login/              // Login feature
 ```
 
-### 6. 🏢 **Entities Layer** (`src/entities/`)
+#### Feature Structure
 
-**Ne**: İş varlıkları, temel data modelleri
-**Ne zaman kullan**: Uygulamanın temel kavramları için
+```
+feature/
+├── ui/           # UI components
+├── model/        # State management
+├── api/          # API calls
+└── lib/          # Helper functions
+```
+
+### 6. 📦 **Entities Layer** (`src/entities/`)
+
+**What**: Business domain models
+**When to use**: For core business entities
 
 ```typescript
-// ✅ Entity örnekleri:
-src/entities/
-├── user/                   // Kullanıcı varlığı
-│   ├── model/
-│   │   ├── types.ts       // User tipi
-│   │   ├── store.ts       // User state
-│   │   └── validation.ts  // User validasyonu
-│   ├── api/
-│   │   └── user-api.ts    // User API çağrıları
-│   └── ui/
-│       ├── user-card.tsx  // Kullanıcı kartı
-│       └── user-avatar.tsx // Avatar bileşeni
-├── product/                // Ürün varlığı
-│   ├── model/
-│   │   ├── types.ts       // Product tipi
-│   │   ├── store.ts       // Product state
-│   │   └── validation.ts
-│   ├── api/
-│   │   └── product-api.ts
-│   └── ui/
-│       ├── product-card.tsx
-│       ├── product-image.tsx
-│       └── product-price.tsx
-├── cart/                   // Sepet varlığı
-│   ├── model/
-│   │   ├── types.ts       // Cart & CartItem tipleri
-│   │   ├── store.ts       // Sepet state'i
-│   │   └── calculations.ts // Fiyat hesaplamaları
-│   ├── api/
-│   │   └── cart-api.ts
-│   └── ui/
-│       ├── cart-item.tsx
-│       └── cart-summary.tsx
-├── order/                  // Sipariş varlığı
-│   ├── model/
-│   │   ├── types.ts
-│   │   └── status.ts      // Sipariş durumları
-│   ├── api/
-│   │   └── order-api.ts
-│   └── ui/
-│       ├── order-card.tsx
-│       └── order-status.tsx
-└── category/               // Kategori varlığı
-    ├── model/
-    │   └── types.ts
-    ├── api/
-    │   └── category-api.ts
-    └── ui/
-        ├── category-badge.tsx
-        └── category-tree.tsx
+// ✅ Correct placement examples:
+src/entities/product/                 // Product entity
+src/entities/user/                    // User entity
+src/entities/cart/                    // Cart entity
+```
+
+#### Entity Structure
+
+```
+entity/
+├── ui/           # Entity-related UI components
+├── model/        # Entity state and business logic
+├── api/          # Entity API operations
+└── lib/          # Entity helper functions
 ```
 
 ### 7. 🔧 **Shared Layer** (`src/shared/`)
 
-**Ne**: Proje genelinde paylaşılan kod
-**Ne zaman kullan**: Herhangi bir katmanda kullanılabilecek kod
+**What**: Reusable code shared across all layers
+**When to use**: For utilities, types, and common components
 
 ```typescript
-// ✅ Shared örnekleri:
-src/shared/
-├── ui/                     // Genel UI bileşenleri
-│   ├── button/
-│   │   ├── index.tsx
-│   │   └── button.stories.ts
-│   ├── input/
-│   │   └── index.tsx
-│   ├── modal/
-│   │   └── index.tsx
-│   └── loading/
-│       └── spinner.tsx
-├── lib/                    // Utility'ler ve helper'lar
-│   ├── utils.ts           // Genel utility fonksiyonlar
-│   ├── validation.ts      // Genel validasyon
-│   ├── constants.ts       // Sabitler
-│   ├── formatters.ts      // Format fonksiyonları
-│   ├── storage.ts         // LocalStorage helper
-│   └── api-client.ts      // API client config
-├── api/                    // API konfigürasyonu
-│   ├── client.ts          // HTTP client
-│   ├── types.ts           // API tipleri
-│   └── endpoints.ts       // API endpoint'leri
-├── config/                 // Konfigürasyon
-│   ├── env.ts             // Environment variables
-│   ├── database.ts        // DB config
-│   └── auth.ts            // Auth config
-├── hooks/                  // Paylaşılan React hooks
-│   ├── use-local-storage.ts
-│   ├── use-debounce.ts
-│   ├── use-api.ts
-│   └── use-media-query.ts
-└── types/                  // Global tipler
-    ├── api.ts             // API response tipleri
-    ├── common.ts          // Genel tipler
-    └── navigation.ts      // Route tipleri
+// ✅ Correct placement examples:
+src /
+    shared /
+    api / // API client
+    src /
+    shared /
+    ui /
+    button / // UI button component
+    src /
+    shared /
+    lib /
+    validation.ts; // Validation utilities
 ```
 
-### 8. 🎨 **Styles Layer** (`src/styles/`)
+## 🚫 Common Mistakes to Avoid
 
-**Ne**: Global stiller
-**Ne zaman kullan**: Uygulama geneli stiller
-
-```css
-/* ✅ Stil örnekleri: */
-src/styles/
-├── globals.css            // Global CSS
-├── components.css         // Component stilleri
-├── utilities.css          // Utility sınıfları
-└── variables.css          // CSS değişkenleri
-```
-
-## 🚀 Pratik Örnekler
-
-### Senaryo 1: Yeni bir "Ürün Karşılaştırma" özelliği ekliyorsunuz
+### ❌ Incorrect Dependencies
 
 ```typescript
-// 1. Entity katmanında ürün karşılaştırma modeli
-src/entities/product-comparison/
-├── model/
-│   ├── types.ts           // ComparisonList tipi
-│   └── store.ts           // Karşılaştırma state'i
-└── ui/
-    └── comparison-badge.tsx // Karşılaştırma badge'i
+// ❌ WRONG: Entity importing from a feature
+import { addToCart } from '@/features/add-to-cart';
 
-// 2. Feature katmanında karşılaştırma özelliği
-src/features/product-comparison/
+// ✅ CORRECT: Feature importing from an entity
+import { Product } from '@/entities/product';
+```
+
+### ❌ Incorrect File Placement
+
+```typescript
+// ❌ WRONG: UI component in the API folder
+src / entities / product / api / ProductCard.tsx;
+
+// ✅ CORRECT: UI component in the UI folder
+src / entities / product / ui / ProductCard.tsx;
+```
+
+### ❌ Mixing Responsibilities
+
+```typescript
+// ❌ WRONG: Mixing entity and feature logic
+src / entities / product / model / addToCart.ts;
+
+// ✅ CORRECT: Keep feature logic in features
+src / features / add - to - cart / model / addToCart.ts;
+```
+
+## 🔄 Dependency Rules
+
+1. **Layers can only import from layers below them**
+    - App → Processes → Pages → Widgets → Features → Entities → Shared
+    - Example: Features can import from Entities and Shared, but not from Widgets
+
+2. **Slices can only import from their own slice or from shared**
+    - Example: `product` entity can't import from `user` entity
+
+3. **Segments can only import from segments of the same level or below**
+    - ui → model → api → lib
+    - Example: UI can import from model, but model can't import from UI
+
+## 📝 Naming Conventions
+
+1. **Folders**: Use kebab-case for all folders
+    - Example: `add-to-cart`, `product-card`
+
+2. **Files**:
+    - React Components: Use PascalCase
+        - Example: `ProductCard.tsx`, `AddToCartButton.tsx`
+    - Non-component files: Use camelCase
+        - Example: `productModel.ts`, `cartUtils.ts`
+
+3. **Exports**:
+    - Use named exports for most cases
+    - Use default exports only for main components
+
+## 🧪 Testing Structure
+
+```
+feature/
 ├── ui/
-│   ├── compare-button.tsx
-│   ├── comparison-modal.tsx
-│   └── comparison-table.tsx
+│   ├── Component.tsx
+│   └── __tests__/
+│       └── Component.test.tsx
 ├── model/
-│   └── comparison-actions.ts
-└── api/
-    └── comparison-api.ts
-
-// 3. Widget olarak karşılaştırma sayfası
-src/widgets/comparison-widget/
-├── index.tsx
-├── comparison-header.tsx
-└── comparison-grid.tsx
+│   ├── store.ts
+│   └── __tests__/
+│       └── store.test.ts
 ```
 
-### Senaryo 2: Yeni bir "Canlı Destek" sistemi ekliyorsunuz
+## 🚀 Best Practices
 
-```typescript
-// 1. Entity: Chat varlığı
-src/entities/chat/
-├── model/
-│   ├── types.ts           // Message, ChatRoom tipleri
-│   └── store.ts
-└── ui/
-    ├── message-bubble.tsx
-    └── chat-avatar.tsx
+1. **Keep slices isolated**: Slices should be independent and reusable
+2. **Public API**: Each slice should have a clear public API (index.ts)
+3. **Composition over inheritance**: Compose components from smaller ones
+4. **Single responsibility**: Each file should have a single responsibility
+5. **Explicit dependencies**: Make dependencies explicit in imports
 
-// 2. Feature: Chat özellikleri
-src/features/live-chat/
-├── ui/
-│   ├── chat-window.tsx
-│   ├── message-input.tsx
-│   └── chat-button.tsx
-├── model/
-│   └── chat-store.ts
-└── api/
-    └── chat-api.ts
+## 📚 Resources
 
-// 3. Widget: Chat widget'ı
-src/widgets/chat-widget/
-├── index.tsx
-├── chat-header.tsx
-└── chat-body.tsx
-
-// 4. Process: Müşteri destek süreci
-src/processes/customer-support/
-├── chat-initialization.ts
-├── agent-assignment.ts
-└── conversation-flow.ts
-```
-
-### Senaryo 3: Yeni bir sayfa ekliyorsunuz
-
-```typescript
-// 1. App Router'da sayfa
-src/app/(client)/about/page.tsx
-
-// 2. Sayfa-spesifik widget'lar
-src/widgets/about-hero/
-src/widgets/team-section/
-src/widgets/company-values/
-
-// 3. Gerekirse yeni feature'lar
-src/features/contact-form/
-src/features/newsletter-signup/
-```
-
-## ❌ Yaygın Hatalar ve Doğru Yaklaşımlar
-
-### ❌ Yanlış:
-
-```typescript
-// Widget'dan feature'a import
-src / widgets / header / index.tsx;
-import { loginUser } from '../../features/auth/api';
-
-// Entity'den üst katmanlara import
-src / entities / user / api / index.ts;
-import { showNotification } from '../../features/notifications';
-
-// Shared'dan business logic
-src / shared / lib / user - business - logic.ts;
-```
-
-### ✅ Doğru:
-
-```typescript
-// Feature'dan entity'ye import
-src / features / auth / ui / login - form.tsx;
-import { User } from '../../entities/user';
-
-// Widget'dan feature'a import
-src / widgets / header / index.tsx;
-import { LoginButton } from '../../features/auth';
-
-// Shared sadece generic kod
-src / shared / lib / http - client.ts;
-src / shared / ui / button / index.tsx;
-```
-
-## 📋 Dosya Yerleştirme Kontrol Listesi
-
-Yeni bir dosya eklerken şu soruları sorun:
-
-1. **Bu kod hangi katmanda?**
-    - Business logic → Entities/Features
-    - UI bileşeni → Widgets/Features/Entities
-    - Sayfa → App
-    - Utility → Shared
-
-2. **Bu kod tekrar kullanılacak mı?**
-    - Evet → Shared/Entities
-    - Hayır → Features/App
-
-3. **Bu kod business domain'e bağımlı mı?**
-    - Evet → Entities/Features
-    - Hayır → Shared
-
-4. **Bu kod bir kullanıcı etkileşimi mi?**
-    - Evet → Features
-    - Hayır → Entities/Shared
-
-Bu rehberi takip ederek kodunuzu doğru yere yerleştirabilir ve projenizin sürdürülebilirliğini artırabilirsiniz! 🎯
+- [Feature-Sliced Design Official Documentation](https://feature-sliced.design/)
+- [FSD Layers Explanation](https://feature-sliced.design/docs/reference/layers)
+- [FSD Slices Explanation](https://feature-sliced.design/docs/reference/slices)

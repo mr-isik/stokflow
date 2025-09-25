@@ -1,18 +1,18 @@
-# Error Handling Sistemi - Kullanım Kılavuzu
+# Error Handling System - Usage Guide
 
-## 🎯 Genel Bakış
+## 🎯 Overview
 
-Bu sistem tüm API işlemleri için merkezi hata yönetimi sağlar:
+This system provides centralized error handling for all API operations:
 
-- ✅ **Client-side**: React Query mutations ve queries
+- ✅ **Client-side**: React Query mutations and queries
 - ✅ **Server-side**: API routes
-- ✅ **Kullanıcı dostu**: Türkçe hata mesajları
-- ✅ **Merkezi**: Tek yerden yönetim
-- ✅ **Tip güvenli**: TypeScript desteği
+- ✅ **User-friendly**: Clear error messages
+- ✅ **Centralized**: Single point of management
+- ✅ **Type-safe**: TypeScript support
 
-## 🔧 Client-Side Kullanım
+## 🔧 Client-Side Usage
 
-### 1. Form Mutations (Önerilen)
+### 1. Form Mutations (Recommended)
 
 ```tsx
 import { useFormMutation } from '@/shared/hooks';
@@ -49,15 +49,17 @@ const useMyForm = () => {
 ```tsx
 import { useAppMutation } from '@/shared/hooks';
 
-const mutation = useAppMutation(data => AuthAPI.login(data), {
-    onSuccess: data => {
-        console.log('Success:', data);
-    },
-    onError: error => {
-        // error.message otomatik Türkçe
-        setError(error.message);
-    },
-});
+const useAddToCart = () => {
+    const queryClient = useQueryClient();
+
+    return useAppMutation((productId: string) => CartAPI.addItem(productId), {
+        onSuccess: () => {
+            queryClient.invalidateQueries(['cart']);
+            toast.success('Product added to cart');
+        },
+        // Error handling is automatic
+    });
+};
 ```
 
 ### 3. Queries
@@ -65,147 +67,203 @@ const mutation = useAppMutation(data => AuthAPI.login(data), {
 ```tsx
 import { useAppQuery } from '@/shared/hooks';
 
-const { data, error, isLoading } = useAppQuery({
-    queryKey: ['products'],
-    queryFn: () => ProductAPI.getAll(),
-});
-
-// error.message otomatik Türkçe
-if (error) {
-    return <div>Hata: {error.message}</div>;
-}
+const useProductDetails = (productId: string) => {
+    return useAppQuery(
+        ['product', productId],
+        () => ProductAPI.getById(productId),
+        {
+            enabled: !!productId,
+            // Error handling is automatic
+        }
+    );
+};
 ```
 
-### 4. Manuel Error Handling
+## 🔄 Server-Side Usage
+
+### 1. API Route Handlers
 
 ```tsx
-import { useErrorHandler } from '@/shared/hooks';
+import { handleApiError } from '@/shared/lib/error-handling';
 
-const { handleError, handleFormError } = useErrorHandler();
-
-try {
-    await someAPICall();
-} catch (error) {
-    const message = handleError(error);
-    setError(message);
-}
-```
-
-## 🛠 Server-Side Kullanım
-
-### 1. API Route Wrapper (Önerilen)
-
-```tsx
-// app/api/products/route.ts
-import { createApiHandler } from '@/shared/lib/api/server-utils';
-import { productSchema } from '@/entities/product/model';
-
-export const POST = createApiHandler(
-    async (data: ProductData) => {
-        // Your business logic
-        const product = await createProduct(data);
-        return product;
-    },
-    {
-        requestSchema: productSchema, // Otomatik validation
-        requireAuth: true, // Otomatik auth check
-    }
-);
-```
-
-### 2. Manuel Error Handling
-
-```tsx
-import { handleApiError, validateRequest } from '@/shared/lib/api/server-utils';
-
-export async function POST(request: Request) {
+export async function POST(req: Request) {
     try {
-        const body = await request.json();
+        const data = await req.json();
 
         // Validation
-        const validation = validateRequest(productSchema, body);
-        if (!validation.success) {
-            return validation.response;
+        const result = userSchema.safeParse(data);
+        if (!result.success) {
+            return handleApiError(new ValidationError(result.error));
         }
 
         // Business logic
-        const result = await someOperation(validation.data);
+        const user = await createUser(data);
 
-        return successResponse(result);
+        return Response.json({ user });
     } catch (error) {
         return handleApiError(error);
     }
 }
 ```
 
-## 📝 Hata Mesajları
+## 🧩 Error Types
 
-### Yaygın Hata Kodları
+### 1. API Error
 
-```typescript
-'user_already_registered' → 'Bu e-posta adresi zaten kayıtlı'
-'invalid_credentials' → 'E-posta veya şifre hatalı'
-'validation_failed' → 'Girilen bilgileri kontrol edin'
-'network_error' → 'İnternet bağlantısını kontrol edin'
-'server_error' → 'Sunucu hatası. Lütfen daha sonra tekrar deneyin'
-```
-
-### Yeni Hata Mesajı Ekleme
-
-```typescript
-// shared/lib/errors/index.ts
-export const ERROR_MESSAGES = {
-    // Mevcut mesajlar...
-    custom_error: 'Özel hata mesajınız',
-} as const;
-```
-
-## 🎨 Kullanım Örnekleri
-
-### Signup Form
+Base error class for all API errors:
 
 ```tsx
-const useSignupForm = setError => {
-    const mutation = useFormMutation(data => AuthAPI.signup(data), {
-        onSuccess: () => router.push('/welcome'),
-        setServerError: setError,
-        clearErrors: () => setError(''),
-    });
+import { ApiError } from '@/shared/lib/error-handling';
 
-    const onSubmit = data => {
-        mutation.mutate(data);
-    };
+throw new ApiError({
+    message: 'Something went wrong',
+    statusCode: 500,
+});
+```
 
-    return { onSubmit, isLoading: mutation.isPending };
+### 2. Validation Error
+
+For form validation errors:
+
+```tsx
+import { ValidationError } from '@/shared/lib/error-handling';
+
+throw new ValidationError({
+    message: 'Validation failed',
+    fields: {
+        email: 'Invalid email format',
+        password: 'Password must be at least 8 characters',
+    },
+});
+```
+
+### 3. Authentication Error
+
+For auth-related errors:
+
+```tsx
+import { AuthError } from '@/shared/lib/error-handling';
+
+throw new AuthError({
+    message: 'Authentication failed',
+    code: 'invalid_credentials',
+});
+```
+
+### 4. Not Found Error
+
+For resource not found errors:
+
+```tsx
+import { NotFoundError } from '@/shared/lib/error-handling';
+
+throw new NotFoundError({
+    message: 'Product not found',
+    resource: 'product',
+    id: productId,
+});
+```
+
+### 5. Permission Error
+
+For authorization errors:
+
+```tsx
+import { PermissionError } from '@/shared/lib/error-handling';
+
+throw new PermissionError({
+    message: 'You do not have permission to access this resource',
+    requiredRole: 'admin',
+});
+```
+
+## 🔍 Error Handling in Components
+
+### 1. Form Components
+
+```tsx
+const SignupForm = () => {
+    const { mutation, serverError, fieldErrors } = useSignupForm();
+
+    return (
+        <form onSubmit={handleSubmit(mutation.mutate)}>
+            {serverError && <Alert variant="error">{serverError}</Alert>}
+
+            <Input
+                name="email"
+                error={fieldErrors.email}
+                {...register('email')}
+            />
+
+            <Button type="submit" loading={mutation.isLoading}>
+                Sign Up
+            </Button>
+        </form>
+    );
 };
 ```
 
-### Product List
+### 2. Query Components
 
 ```tsx
-const ProductList = () => {
-    const {
-        data: products,
-        error,
-        isLoading,
-    } = useAppQuery({
-        queryKey: ['products'],
-        queryFn: () => ProductAPI.getAll(),
-    });
+const ProductDetails = ({ productId }) => {
+    const { data, isLoading, error } = useProductDetails(productId);
 
     if (isLoading) return <Spinner />;
-    if (error) return <ErrorMessage>{error.message}</ErrorMessage>;
 
-    return <ProductGrid products={products} />;
+    if (error) return <ErrorDisplay error={error} />;
+
+    return <ProductView product={data} />;
 };
 ```
 
-## 🚀 Faydalar
+## 🚀 Best Practices
 
-1. **Kod Tekrarı Azaltır**: Merkezi error handling
-2. **Tutarlı UX**: Aynı hata mesajları her yerde
-3. **Tip Güvenliği**: TypeScript desteği
-4. **Kolay Maintenance**: Tek yerden güncelleme
-5. **Developer Experience**: Basit API
+1. **Always use the provided hooks** (`useAppQuery`, `useAppMutation`, `useFormMutation`) instead of raw React Query hooks
+2. **Handle all errors in try/catch blocks** on the server
+3. **Use specific error types** for better error handling
+4. **Provide user-friendly error messages**
+5. **Validate input data** before processing
+6. **Log errors** for debugging purposes
+7. **Use toast notifications** for non-critical errors
+8. **Display inline errors** for form fields
+9. **Provide fallback UI** for error states
 
-Bu sistem ile artık her API işleminde ayrı ayrı error handling yapmaya gerek yok! 🎉
+## 📚 Error Handling Components
+
+### 1. ErrorBoundary
+
+Catches unhandled errors in the component tree:
+
+```tsx
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
+
+<ErrorBoundary fallback={<ErrorPage />}>
+    <MyComponent />
+</ErrorBoundary>;
+```
+
+### 2. ErrorDisplay
+
+Displays formatted error messages:
+
+```tsx
+import { ErrorDisplay } from '@/shared/ui/error-display';
+
+<ErrorDisplay error={error} retry={() => refetch()} />;
+```
+
+### 3. FormErrorMessage
+
+Displays field-specific error messages:
+
+```tsx
+import { FormErrorMessage } from '@/shared/ui/form';
+
+<FormField>
+    <Input name="email" {...register('email')} />
+    {fieldErrors.email && (
+        <FormErrorMessage>{fieldErrors.email}</FormErrorMessage>
+    )}
+</FormField>;
+```

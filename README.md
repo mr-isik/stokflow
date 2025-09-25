@@ -1,88 +1,88 @@
-# E-Commerce Proje Mimarisi Dokümantasyonu
+# E-Commerce Project Architecture Documentation
 
-## 📋 İçindekiler
+## 📋 Table of Contents
 
-1. [Genel Bakış](#genel-bakış)
-2. [Teknoloji Stack](#teknoloji-stack)
-3. [Feature-Sliced Design (FSD) Mimarisi](#feature-sliced-design-fsd-mimarisi)
-4. [Dizin Yapısı](#dizin-yapısı)
-5. [Katman Detayları](#katman-detayları)
-6. [Route Yapısı](#route-yapısı)
+1. [Overview](#overview)
+2. [Technology Stack](#technology-stack)
+3. [Feature-Sliced Design (FSD) Architecture](#feature-sliced-design-fsd-architecture)
+4. [Directory Structure](#directory-structure)
+5. [Layer Details](#layer-details)
+6. [Route Structure](#route-structure)
 7. [State Management](#state-management)
-8. [API İstemci Yapısı](#api-istemci-yapısı)
-9. [Stil ve UI](#stil-ve-ui)
-10. [Geliştirme Kılavuzu](#geliştirme-kılavuzu)
+8. [API Client Structure](#api-client-structure)
+9. [Styling and UI](#styling-and-ui)
+10. [Development Guide](#development-guide)
 
-## 🎯 Genel Bakış
+## 🎯 Overview
 
-Bu proje, modern web teknolojileri kullanılarak geliştirilmiş bir e-ticaret uygulamasıdır. Feature-Sliced Design (FSD) mimarisi prensiplerine uygun olarak yapılandırılmıştır. Bu mimari, kodun ölçeklenebilir, sürdürülebilir ve takım çalışmasına uygun olmasını sağlar.
+This project is an e-commerce application developed using modern web technologies. It is structured according to Feature-Sliced Design (FSD) architecture principles, which ensures that the code is scalable, maintainable, and suitable for team collaboration.
 
-## 🛠 Teknoloji Stack
+## 🛠 Technology Stack
 
-### Frontend Framework & Kütüphaneler
+### Frontend Framework & Libraries
 
-- **Next.js 15.4.4** - React tabanlı full-stack framework (App Router)
-- **React 19.1.0** - UI kütüphanesi
-- **TypeScript 5** - Tip güvenliği
+- **Next.js 15.4.4** - React-based full-stack framework (App Router)
+- **React 19.1.0** - UI library
+- **TypeScript 5** - Type safety
 - **Tailwind CSS 4** - Utility-first CSS framework
-- **HeroUI** - Modern React UI bileşen kütüphanesi
-- **Framer Motion** - Animasyon kütüphanesi
+- **HeroUI** - Modern React UI component library
+- **Framer Motion** - Animation library
 
-### Geliştirme Araçları
+### Development Tools
 
-- **ESLint** - Kod kalitesi ve standartları
-- **PostCSS** - CSS işleme
-- **Turbopack** - Hızlı geliştirme sunucusu
+- **ESLint** - Code quality and standards
+- **PostCSS** - CSS processing
+- **Turbopack** - Fast development server
 
-### HTTP İstemci
+### HTTP Client
 
-- **Axios** - HTTP istekleri için
+- **Axios** - For HTTP requests
 
-## 🏗 Feature-Sliced Design (FSD) Mimarisi
+## 🏗 Feature-Sliced Design (FSD) Architecture
 
-Bu proje, Feature-Sliced Design metodolojisini kullanmaktadır. FSD, frontend uygulamalarını organize etmek için geliştirilmiş modern bir mimaridir.
+This project uses the Feature-Sliced Design methodology, a modern architecture developed for organizing frontend applications.
 
-### FSD Katmanları (Yukarıdan Aşağıya)
+### FSD Layers (Top to Bottom)
 
-1. **app** - Uygulama başlatma ve global konfigürasyon
-2. **processes** - Karmaşık iş süreçleri (cross-feature etkileşimler)
-3. **pages** - Sayfa bileşenleri (Next.js App Router ile entegre)
-4. **widgets** - Bağımsız UI blokları
-5. **features** - İş değeri taşıyan kullanıcı etkileşimleri
-6. **entities** - İş varlıkları
-7. **shared** - Yeniden kullanılabilir kod
+1. **app** - Application startup and global configuration
+2. **processes** - Complex business processes (cross-feature interactions)
+3. **pages** - Page components (integrated with Next.js App Router)
+4. **widgets** - Independent UI blocks
+5. **features** - User interactions with business value
+6. **entities** - Business entities
+7. **shared** - Reusable code
 
-## 📁 Dizin Yapısı
+## 📁 Directory Structure
 
 ```
 src/
-├── app/                    # Uygulama katmanı
-│   ├── layout.tsx         # Ana layout
-│   ├── page.tsx           # Ana sayfa
-│   ├── (admin)/           # Admin route grubu
+├── app/                    # Application layer
+│   ├── layout.tsx         # Main layout
+│   ├── page.tsx           # Main page
+│   ├── (admin)/           # Admin route group
 │   │   ├── dashboard/
 │   │   └── products/
-│   ├── (auth)/            # Kimlik doğrulama route grubu
+│   ├── (auth)/            # Authentication route group
 │   │   ├── login/
 │   │   └── signup/
-│   └── (client)/          # Müşteri route grubu
+│   └── (client)/          # Client route group
 │       ├── cart/
 │       ├── checkout/
 │       └── products/
-├── processes/             # İş süreçleri
+├── processes/             # Business processes
 │   ├── auth/
 │   └── checkout-flow/
-├── widgets/               # UI widget'ları
-├── features/              # Özellikler
+├── widgets/               # UI widgets
+├── features/              # Features
 │   ├── add-to-cart/
 │   ├── auth/
 │   ├── checkout/
 │   └── product-search/
-├── entities/              # İş varlıkları
+├── entities/              # Business entities
 │   ├── cart/
 │   ├── product/
 │   └── user/
-├── shared/                # Paylaşılan kod
+├── shared/                # Shared code
 │   ├── api/
 │   ├── config/
 │   └── lib/
@@ -90,307 +90,100 @@ src/
     └── globals.css
 ```
 
-## 🔍 Katman Detayları
-
-### 1. App Katmanı (`src/app/`)
-
-- **Amaç**: Uygulama başlatma, routing ve global konfigürasyon
-- **İçerik**:
-  - Next.js App Router sayfaları
-  - Layout bileşenleri
-  - Global providers
-  - Route grupları
-
-#### Route Grupları:
-
-- `(admin)/` - Yönetici paneli sayfaları
-- `(auth)/` - Kimlik doğrulama sayfaları
-- `(client)/` - Müşteri sayfaları
-
-### 2. Processes Katmanı (`src/processes/`)
-
-- **Amaç**: Birden fazla feature'ı koordine eden karmaşık iş süreçleri
-- **Örnekler**:
-  - `auth/` - Kimlik doğrulama süreçleri
-  - `checkout-flow/` - Sipariş tamamlama süreci
-
-### 3. Widgets Katmanı (`src/widgets/`)
-
-- **Amaç**: Bağımsız, yeniden kullanılabilir UI blokları
-- **Örnekler**: Header, Footer, Sidebar, ProductCard grid'leri
-
-### 4. Features Katmanı (`src/features/`)
-
-- **Amaç**: Kullanıcı değeri taşıyan işlevsellikler
-- **Mevcut Features**:
-  - `add-to-cart/` - Sepete ekleme işlevi
-  - `auth/` - Giriş/çıkış işlemleri
-  - `checkout/` - Ödeme işlemleri
-  - `product-search/` - Ürün arama
-
-#### Feature Yapısı:
-
-```
-feature/
-├── ui/           # UI bileşenleri
-├── model/        # State management
-├── api/          # API çağrıları
-└── lib/          # Yardımcı fonksiyonlar
-```
-
-### 5. Entities Katmanı (`src/entities/`)
-
-- **Amaç**: İş domain'ine ait temel varlıklar
-- **Mevcut Entities**:
-  - `cart/` - Sepet varlığı
-  - `product/` - Ürün varlığı
-  - `user/` - Kullanıcı varlığı
-
-#### Entity Yapısı:
-
-```
-entity/
-├── ui/           # Entity ile ilgili UI bileşenleri
-├── model/        # Entity state ve business logic
-├── api/          # Entity API işlemleri
-└── lib/          # Entity yardımcı fonksiyonları
-```
-
-### 6. Shared Katmanı (`src/shared/`)
-
-- **Amaç**: Tüm katmanlar tarafından kullanılabilir kod
-- **İçerik**:
-  - `api/` - HTTP istemci konfigürasyonu
-  - `config/` - Uygulama konfigürasyonları
-  - `lib/` - Yardımcı kütüphaneler
-
-## 🛣 Route Yapısı
-
-### Next.js App Router Route Grupları
-
-```
-app/
-├── layout.tsx              # Ana layout
-├── page.tsx                # Ana sayfa (/)
-├── (admin)/                # Admin route grubu
-│   ├── dashboard/
-│   │   └── page.tsx        # /dashboard
-│   └── products/
-│       └── page.tsx        # /products (admin)
-├── (auth)/                 # Auth route grubu
-│   ├── login/
-│   │   └── page.tsx        # /login
-│   └── signup/
-│       └── page.tsx        # /signup
-└── (client)/               # Client route grubu
-    ├── cart/
-    │   └── page.tsx        # /cart
-    ├── checkout/
-    │   └── page.tsx        # /checkout
-    └── products/
-        └── page.tsx        # /products (client)
-```
-
-### Route Grupları Avantajları:
+## 🔍 Layer Details
 
-- URL yapısını etkilemeden logical gruplama
-- Farklı layoutlar için grup bazlı organizasyon
-- Kod organizasyonu ve maintainability
+### 1. App Layer (`src/app/`)
 
-## 📊 State Management
+- **Purpose**: Application startup, routing, and global configuration
+- **Contents**:
+    - Next.js App Router pages
+    - Layout components
+    - Route groups for different user types (admin, client, auth)
 
-### Mevcut Yapı
+### 2. Widgets Layer (`src/widgets/`)
 
-- `src/shared/lib/store.ts` - Global state store (henüz implement edilmemiş)
+- **Purpose**: Independent UI blocks that combine multiple features and entities
+- **Examples**:
+    - Header
+    - Footer
+    - Sidebar
+    - Product cards
 
-### Önerilen State Management Stratejisi
+### 3. Features Layer (`src/features/`)
 
-```typescript
-// Feature bazlı state management
-features/
-  auth/
-    model/
-      store.ts          # Auth state
-  cart/
-    model/
-      store.ts          # Cart state
-
-shared/
-  lib/
-    store.ts            # Global store konfigürasyonu
-```
-
-## 🌐 API İstemci Yapısı
-
-### Axios Konfigürasyonu (`src/shared/api/client.ts`)
-
-```typescript
-export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 10000,
-});
-
-// Request interceptor
-axiosInstance.interceptors.request.use((config) => {
-  // Auth token ekleme
-  return config;
-});
-
-// Response interceptor
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Global error handling
-    return Promise.reject(error);
-  }
-);
-```
+- **Purpose**: User interactions that provide business value
+- **Examples**:
+    - Authentication (login/signup)
+    - Add to cart
+    - Checkout process
+    - Product search/filter
 
-### API Organizasyonu Önerisi
-
-```
-shared/api/
-├── client.ts           # Ana HTTP istemci
-├── types.ts            # API tip tanımları
-└── endpoints.ts        # API endpoint'leri
+### 4. Entities Layer (`src/entities/`)
 
-entities/*/api/         # Entity bazlı API çağrıları
-features/*/api/         # Feature bazlı API çağrıları
-```
+- **Purpose**: Business domain models and their logic
+- **Examples**:
+    - Product
+    - User
+    - Cart
+    - Order
 
-## 🎨 Stil ve UI
+### 5. Shared Layer (`src/shared/`)
 
-### CSS Framework: Tailwind CSS 4
+- **Purpose**: Reusable infrastructure code
+- **Contents**:
+    - API clients
+    - UI components
+    - Utility functions
+    - Types and constants
 
-- Utility-first yaklaşım
-- Custom design system
-- Dark mode desteği
+## 🛣 Route Structure
 
-### UI Component Library: HeroUI
+The application uses Next.js App Router with route groups:
 
-- Modern React bileşenleri
-- Tailwind CSS ile entegre
-- Accessibility desteği
+- **/(admin)/** - Admin panel routes
+- **/(auth)/** - Authentication routes
+- **/(client)/** - Customer-facing routes
 
-### Animasyonlar: Framer Motion
+## 🧠 State Management
 
-- Performanslı animasyonlar
-- Gesture desteği
-- Layout animasyonları
+- **React Context** - For global state (auth, theme)
+- **React Query** - For server state management
+- **Local state** - For component-specific state
 
-### Global Stiller
-
-- `src/styles/globals.css` - Global CSS tanımları
-- Font: Geist Sans & Geist Mono
+## 🌐 API Client Structure
 
-## 📋 Geliştirme Kılavuzu
+- Centralized API client with interceptors
+- Request/response validation using Zod
+- Error handling middleware
+- Automatic retry logic
 
-### 1. Yeni Feature Ekleme
+## 🎨 Styling and UI
 
-```bash
-# Feature klasörü oluştur
-src/features/new-feature/
-├── ui/
-│   ├── index.ts
-│   └── NewFeatureComponent.tsx
-├── model/
-│   ├── index.ts
-│   └── store.ts
-├── api/
-│   ├── index.ts
-│   └── endpoints.ts
-└── lib/
-    ├── index.ts
-    └── utils.ts
-```
+- **Tailwind CSS** - For styling
+- **HeroUI** - For UI components
+- **Custom components** - For specific UI needs
 
-### 2. Entity Ekleme
+## 👨‍💻 Development Guide
 
-```bash
-# Entity klasörü oluştur
-src/entities/new-entity/
-├── ui/
-├── model/
-├── api/
-└── lib/
-```
+### Getting Started
 
-### 3. Sayfa Ekleme
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Run the development server: `npm run dev`
 
-```bash
-# App router'da sayfa ekle
-src/app/new-page/
-└── page.tsx
-```
+### Code Standards
 
-### 4. Import Kuralları
+- Follow TypeScript best practices
+- Use ESLint for code quality
+- Follow the FSD architecture principles
 
-```typescript
-// ✅ Doğru import sırası
-import React from "react";
-import { NextPage } from "next";
+### Testing
 
-import { Widget } from "@/widgets/widget-name";
-import { Feature } from "@/features/feature-name";
-import { Entity } from "@/entities/entity-name";
-import { shared } from "@/shared/lib";
-```
+- Unit tests with Vitest
+- Component tests with React Testing Library
+- E2E tests with Playwright
 
-### 5. Komut Scriptleri
+### Deployment
 
-```bash
-# Geliştirme sunucusu (Turbopack ile)
-npm run dev
-
-# Production build
-npm run build
-
-# Production sunucusu
-npm run start
-
-# Linting
-npm run lint
-```
-
-### 6. Klasör Adlandırma Kuralları
-
-- **Katmanlar**: `kebab-case` (örn: `feature-name`)
-- **Bileşenler**: `PascalCase` (örn: `ProductCard.tsx`)
-- **Dosyalar**: `camelCase` veya `kebab-case`
-- **Slices**: İş domain'ini yansıtacak anlamlı isimler
-
-### 7. Kod Organizasyon Prensipleri
-
-1. **Tek Sorumluluk**: Her slice tek bir sorumluluğa sahip olmalı
-2. **Dependency Rule**: Üst katmanlar alt katmanları kullanabilir, tersi olmaz
-3. **Public API**: Her slice'ın clean bir public API'si olmalı
-4. **Isolation**: Slice'lar birbirinden izole olmalı
-
-## 🚀 Gelecek Geliştirmeler
-
-### Planlanan Özellikler
-
-- [ ] State management implementation (Zustand/Redux Toolkit)
-- [ ] Authentication system
-- [ ] Product catalog
-- [ ] Shopping cart functionality
-- [ ] Payment integration
-- [ ] Admin dashboard
-- [ ] User profile management
-- [ ] Order tracking
-- [ ] Product reviews
-- [ ] Search & filtering
-
-### Teknik İyileştirmeler
-
-- [ ] API endpoint'lerinin implement edilmesi
-- [ ] Error boundary'lerin eklenmesi
-- [ ] Loading state'lerinin optimize edilmesi
-- [ ] SEO optimizasyonları
-- [ ] Performance monitoring
-- [ ] Unit/integration testlerin eklenmesi
-- [ ] CI/CD pipeline kurulumu
-
----
-
-_Bu dokümantasyon, projenin mevcut durumunu ve mimari kararlarını yansıtmaktadır. Proje gelişimi ile birlikte güncellenecektir._
+- Vercel for production deployment
+- GitHub Actions for CI/CD

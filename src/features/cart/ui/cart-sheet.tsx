@@ -1,31 +1,30 @@
 'use client';
 
 import {
-    Button,
     Badge,
+    Button,
+    Chip,
+    Divider,
     Drawer,
+    DrawerBody,
     DrawerContent,
     DrawerHeader,
-    DrawerBody,
     useDisclosure,
-    Divider,
-    Chip,
 } from '@heroui/react';
 import { ShoppingCartBoldIcon } from '@heroui/shared-icons';
 import { useRouter } from 'next/navigation';
 import { useCart } from '../hooks/queries';
 import { useCartItems } from '../hooks/use-cart-items';
-import { formatPrice, calculateCartTotals } from '../lib/utils';
+import { calculateCartTotals, formatPrice } from '../lib/utils';
+import { CartItem } from '../model';
 import {
+    CartItemImage,
+    CartItemPrice,
     QuantityControls,
     RemoveButton,
-    CartItemImage,
     VariantOptions,
-    CartItemPrice,
 } from './components';
 import { EmptyCartState } from './states';
-import { CartItem } from '../model';
-import { IoAlert } from 'react-icons/io5';
 
 interface CartDropdownProps {
     className?: string;
@@ -48,11 +47,7 @@ export const CartDropdown = ({ className }: CartDropdownProps) => {
         return null;
     }
 
-    if (isError) {
-        return <IoAlert className="text-danger" />;
-    }
-
-    if (!cart) {
+    if (!cart || isError) {
         return null;
     }
 

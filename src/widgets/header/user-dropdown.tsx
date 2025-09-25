@@ -10,6 +10,7 @@ import {
     DropdownTrigger,
     Link,
 } from '@heroui/react';
+import { QueryClient } from '@tanstack/react-query';
 
 interface UserDropdownProps {
     className?: string;
@@ -17,8 +18,13 @@ interface UserDropdownProps {
 
 export const UserDropdown = ({ className }: UserDropdownProps) => {
     const { user, logout } = useAuth();
+
+    const queryClient = new QueryClient();
     const handleLogout = () => {
         logout();
+        queryClient.resetQueries({
+            queryKey: ['cart'],
+        });
     };
 
     if (!user) {

@@ -1,14 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { AuthCard } from '@/shared/ui/auth-card';
 import { LoginForm } from '@/features/auth/ui/login-form';
+import { AuthCard } from '@/shared/ui/auth-card';
+import { QueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
     const router = useRouter();
+    const queryClient = new QueryClient();
 
     const handleLoginSuccess = () => {
         router.push('/');
+        queryClient.resetQueries({
+            queryKey: ['cart'],
+        });
     };
 
     const handleNavigateToSignup = () => {

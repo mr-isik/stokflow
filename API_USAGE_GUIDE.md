@@ -1,21 +1,21 @@
-# API Client ile Validation ve Logging Kullanım Kılavuzu
+# API Client with Validation and Logging Usage Guide
 
-## 🚀 Temel Kullanım
+## 🚀 Basic Usage
 
-### 1. Schema Tanımlama
+### 1. Schema Definition
 
 ```typescript
-import { z } from "zod";
-import { ApiResponseSchema } from "@/shared/lib/validation";
+import { z } from 'zod';
+import { ApiResponseSchema } from '@/shared/lib/validation';
 
 // Product schema
 const ProductSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  price: z.number().positive(),
-  description: z.string(),
-  category: z.string(),
-  stock: z.number().int().min(0),
+    id: z.string(),
+    name: z.string(),
+    price: z.number().positive(),
+    description: z.string(),
+    category: z.string(),
+    stock: z.number().int().min(0),
 });
 
 // API response schema
@@ -27,324 +27,271 @@ const CreateProductSchema = ProductSchema.omit({ id: true });
 const UpdateProductSchema = ProductSchema.partial();
 ```
 
-### 2. Enhanced API Client Kullanımı
+### 2. Enhanced API Client Usage
 
 ```typescript
-import { apiClient } from "@/shared/api/client";
+import { apiClient } from '@/shared/api/client';
+import { ProductResponseSchema, ProductListResponseSchema } from './schemas';
 
-// GET request with response validation
+// Get product with validation
 const getProduct = async (id: string) => {
-  try {
-    const product = await apiClient.get(
-      `/products/${id}`,
-      undefined,
-      ProductResponseSchema
-    );
-    return product;
-  } catch (error) {
-    console.error("Product fetch error:", error);
-    throw error;
-  }
+    return apiClient.get(`/products/${id}`, {
+        schema: ProductResponseSchema,
+    });
 };
 
-const createProduct = async (productData: CreateProductRequest) => {
-  try {
-    const product = await apiClient.post("/products", productData, {
-      request: CreateProductSchema,
-      response: ProductResponseSchema,
+// Get product list with validation
+const getProducts = async () => {
+    return apiClient.get('/products', {
+        schema: ProductListResponseSchema,
     });
-    return product;
-  } catch (error) {
-    console.error("Product creation error:", error);
-    throw error;
-  }
 };
 
-const updateProduct = async (id: string, updates: UpdateProductRequest) => {
-  try {
-    const product = await apiClient.put(`/products/${id}`, updates, {
-      request: UpdateProductSchema,
-      response: ProductResponseSchema,
+// Create product with validation
+const createProduct = async (data: z.infer<typeof CreateProductSchema>) => {
+    return apiClient.post('/products', {
+        data,
+        schema: ProductResponseSchema,
     });
-    return product;
-  } catch (error) {
-    console.error("Product update error:", error);
-    throw error;
-  }
+};
+
+// Update product with validation
+const updateProduct = async (
+    id: string,
+    data: z.infer<typeof UpdateProductSchema>
+) => {
+    return apiClient.patch(`/products/${id}`, {
+        data,
+        schema: ProductResponseSchema,
+    });
 };
 ```
 
-## 🛡️ Validation Features
+## 🔒 Validation Features
 
-### Otomatik Request Validation
+### Response Validation
+
+The API client automatically validates responses against the provided schema:
 
 ```typescript
-// Geçersiz veri gönderildiğinde ValidationError fırlatılır
-try {
-  await apiClient.post(
-    "/products",
-    {
-      name: "", // ❌ Boş string
-      price: -10, // ❌ Negatif fiyat
-    },
-    { request: CreateProductSchema }
-  );
-} catch (error) {
-  if (error instanceof ValidationError) {
-    console.log("Validation errors:", error.errors);
-    // ["name: String must contain at least 1 character(s)", "price: Number must be greater than 0"]
-  }
-}
+// This will throw a ValidationError if the response doesn't match the schema
+const product = await getProduct('123');
 ```
 
-### Otomatik Response Validation
+### Request Validation
+
+Request data is validated before sending:
 
 ```typescript
-// API'den gelen geçersiz response otomatik yakalanır
-try {
-  const product = await apiClient.get("/products/1", undefined, ProductSchema);
-} catch (error) {
-  if (error instanceof ValidationError) {
-    console.log("API returned invalid data:", error.errors);
-  }
-}
+// This will throw a ValidationError if the data doesn't match the schema
+const newProduct = await createProduct({
+    name: 'Product Name',
+    price: 99.99,
+    description: 'Product description',
+    category: 'electronics',
+    stock: 10,
+});
 ```
 
 ## 📝 Logging Features
 
-### Otomatik Request/Response Logging
+### Request Logging
 
-```typescript
-// Her API çağrısı otomatik loglanır
-logger.debug("API Request", {
-  id: "req_123",
-  method: "POST",
-  url: "/api/products",
-  data: productData,
-  timestamp: new Date(),
-  userId: "user_456",
-});
+All requests are automatically logged with:
 
-logger.debug("API Response", {
-  requestId: "req_123",
-  status: 201,
-  duration: 150,
-  data: responseData,
-});
-```
+- Request method
+- URL
+- Request data
+- Headers (sensitive data redacted)
 
-### Performance Logging
+### Response Logging
 
-```typescript
-logger.time("product-fetch");
-const product = await apiClient.get("/products/1");
-logger.timeEnd("product-fetch");
-// Logs: "Performance: product-fetch { duration: '150.23ms' }"
-```
+All responses are logged with:
+
+- Status code
+- Response data
+- Response time
 
 ### Error Logging
 
-```typescript
-// Hatalar otomatik detaylı loglanır
-logger.error("API Error", {
-  message: "Network request failed",
-  status: 500,
-  url: "/api/products",
-  timestamp: new Date(),
-  userId: "user_456",
-  stack: error.stack,
-});
-```
+Errors are logged with:
 
-## ⚙️ Configuration
+- Error message
+- Stack trace
+- Request details
+- Response details (if available)
 
-### API Client Konfigürasyonu
+## ⚠️ Error Handling
+
+### Centralized Error Handling
+
+The API client provides centralized error handling:
 
 ```typescript
-const apiConfig: ApiConfig = {
-  enableValidation: true,
-  enableLogging: process.env.NODE_ENV !== "production",
-  enableRetry: true,
-  maxRetries: 3,
-  retryDelay: 1000,
-  timeout: 10000,
-};
-```
+import { useErrorHandler } from '@/shared/hooks/use-error-handler';
 
-### Logger Konfigürasyonu
-
-```typescript
-const loggerConfig: LoggerConfig = {
-  level: process.env.NODE_ENV === "production" ? LogLevel.WARN : LogLevel.DEBUG,
-  enableConsole: true,
-  enableRemote: process.env.NODE_ENV === "production",
-  remoteEndpoint: process.env.NEXT_PUBLIC_LOG_ENDPOINT,
-  bufferSize: 10,
-  flushInterval: 30000,
-};
-```
-
-## 🔧 Entity API Örnekleri
-
-### Product Entity API
-
-```typescript
-// src/entities/product/api/index.ts
-import { z } from "zod";
-import { apiClient } from "@/shared/api/client";
-import {
-  ApiResponseSchema,
-  PaginatedResponseSchema,
-} from "@/shared/lib/validation";
-
-const ProductSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  price: z.number(),
-  description: z.string(),
-  category: z.string(),
-  stock: z.number(),
-});
-
-const CreateProductSchema = ProductSchema.omit({ id: true });
-const UpdateProductSchema = ProductSchema.partial();
-
-export const productApi = {
-  // Get all products with pagination
-  getProducts: (params?: {
-    page?: number;
-    limit?: number;
-    category?: string;
-  }) =>
-    apiClient.get("/products", params, PaginatedResponseSchema(ProductSchema)),
-
-  // Get single product
-  getProduct: (id: string) =>
-    apiClient.get(
-      `/products/${id}`,
-      undefined,
-      ApiResponseSchema(ProductSchema)
-    ),
-
-  // Create product
-  createProduct: (data: z.infer<typeof CreateProductSchema>) =>
-    apiClient.post("/products", data, {
-      request: CreateProductSchema,
-      response: ApiResponseSchema(ProductSchema),
-    }),
-
-  // Update product
-  updateProduct: (id: string, data: z.infer<typeof UpdateProductSchema>) =>
-    apiClient.put(`/products/${id}`, data, {
-      request: UpdateProductSchema,
-      response: ApiResponseSchema(ProductSchema),
-    }),
-
-  // Delete product
-  deleteProduct: (id: string) => apiClient.delete(`/products/${id}`),
-};
-```
-
-### User Entity API
-
-```typescript
-// src/entities/user/api/index.ts
-import { z } from "zod";
-import { apiClient } from "@/shared/api/client";
-import { ApiResponseSchema } from "@/shared/lib/validation";
-
-const UserSchema = z.object({
-  id: z.string(),
-  email: z.string().email(),
-  firstName: z.string(),
-  lastName: z.string(),
-  role: z.enum(["customer", "admin"]),
-  createdAt: z.string(),
-});
-
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-const RegisterSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-});
-
-export const userApi = {
-  login: (credentials: z.infer<typeof LoginSchema>) =>
-    apiClient.post("/auth/login", credentials, {
-      request: LoginSchema,
-      response: ApiResponseSchema(
-        z.object({
-          user: UserSchema,
-          token: z.string(),
-        })
-      ),
-    }),
-
-  register: (userData: z.infer<typeof RegisterSchema>) =>
-    apiClient.post("/auth/register", userData, {
-      request: RegisterSchema,
-      response: ApiResponseSchema(UserSchema),
-    }),
-
-  getProfile: () =>
-    apiClient.get("/auth/profile", undefined, ApiResponseSchema(UserSchema)),
-};
-```
-
-## 🚨 Error Handling
-
-### ValidationError Yakalama
-
-```typescript
-import { ValidationError } from "@/shared/lib/validation";
+const { handleError } = useErrorHandler();
 
 try {
-  const result = await apiClient.post("/products", invalidData, {
-    request: ProductSchema,
-  });
+    const product = await getProduct('123');
 } catch (error) {
-  if (error instanceof ValidationError) {
-    // Validation hatası
-    console.log("Validation failed:", error.errors);
-  } else {
-    // API hatası
-    console.log("API error:", error.message);
-  }
+    handleError(error);
 }
 ```
 
-### Global Error Handler
+### Error Types
+
+The API client differentiates between different error types:
+
+- `ValidationError` - Schema validation errors
+- `ApiError` - HTTP errors from the API
+- `NetworkError` - Network connectivity issues
+- `TimeoutError` - Request timeout errors
+
+## 🔄 Retry Logic
+
+### Automatic Retries
+
+The API client automatically retries failed requests:
 
 ```typescript
-// src/shared/lib/error-handler.ts
-export const handleApiError = (error: any) => {
-  if (error instanceof ValidationError) {
-    // Validation hatalarını göster
-    toast.error("Girilen veriler geçersiz");
-    return error.errors;
-  }
+// This will retry up to 3 times with exponential backoff
+const products = await getProducts();
+```
 
-  if (error.status === 401) {
-    // Unauthorized - redirect to login
-    router.push("/login");
-    return;
-  }
+### Custom Retry Configuration
 
-  if (error.status >= 500) {
-    // Server error
-    toast.error("Sunucu hatası oluştu");
-    return;
-  }
+You can customize retry behavior:
 
-  // Generic error
-  toast.error(error.message || "Bir hata oluştu");
+```typescript
+const getProductWithRetry = async (id: string) => {
+    return apiClient.get(`/products/${id}`, {
+        schema: ProductResponseSchema,
+        retry: {
+            maxRetries: 5,
+            retryDelay: 1000,
+            retryStatusCodes: [500, 502, 503, 504],
+        },
+    });
 };
 ```
 
-Bu yapı ile API çağrılarınız otomatik olarak validate edilecek, loglanacak ve hata durumlarında retry yapılacaktır!
+## 🔍 Advanced Usage
+
+### Custom Headers
+
+```typescript
+const getProductWithHeaders = async (id: string) => {
+    return apiClient.get(`/products/${id}`, {
+        schema: ProductResponseSchema,
+        headers: {
+            'X-Custom-Header': 'value',
+        },
+    });
+};
+```
+
+### Request Cancellation
+
+```typescript
+import { createAbortController } from '@/shared/api/utils';
+
+const { controller, signal } = createAbortController();
+
+const getProductCancellable = async (id: string) => {
+    return apiClient.get(`/products/${id}`, {
+        schema: ProductResponseSchema,
+        signal,
+    });
+};
+
+// Cancel the request
+controller.abort();
+```
+
+### Request Transformation
+
+```typescript
+const createProductWithTransform = async (
+    data: z.infer<typeof CreateProductSchema>
+) => {
+    return apiClient.post('/products', {
+        data,
+        schema: ProductResponseSchema,
+        transformRequest: data => ({
+            ...data,
+            createdAt: new Date().toISOString(),
+        }),
+    });
+};
+```
+
+### Response Transformation
+
+```typescript
+const getProductWithTransform = async (id: string) => {
+    return apiClient.get(`/products/${id}`, {
+        schema: ProductResponseSchema,
+        transformResponse: data => ({
+            ...data,
+            price: `$${data.price.toFixed(2)}`,
+        }),
+    });
+};
+```
+
+## 🧪 Testing
+
+### Mocking API Responses
+
+```typescript
+import { mockApiResponse } from '@/shared/api/testing';
+
+// Mock a successful response
+mockApiResponse({
+    url: '/products/123',
+    method: 'GET',
+    status: 200,
+    data: {
+        id: '123',
+        name: 'Test Product',
+        price: 99.99,
+        description: 'Test description',
+        category: 'test',
+        stock: 10,
+    },
+});
+
+// Now any call to getProduct("123") will return the mocked data
+const product = await getProduct('123');
+```
+
+### Mocking API Errors
+
+```typescript
+import { mockApiError } from '@/shared/api/testing';
+
+// Mock an error response
+mockApiError({
+    url: '/products/123',
+    method: 'GET',
+    status: 404,
+    message: 'Product not found',
+});
+
+// Now any call to getProduct("123") will throw the mocked error
+try {
+    const product = await getProduct('123');
+} catch (error) {
+    // Handle error
+}
+```
+
+## 📚 Best Practices
+
+1. **Define schemas in a separate file** for better organization
+2. **Use TypeScript inference** with Zod schemas for type safety
+3. **Centralize API functions** in dedicated files per entity
+4. **Handle errors consistently** using the error handler hook
+5. **Use request cancellation** for components that unmount during requests
+6. **Write tests** for API functions using the mocking utilities
